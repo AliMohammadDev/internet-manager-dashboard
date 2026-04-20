@@ -1,5 +1,4 @@
-
-import { Outlet, NavLink, useLocation } from "react-router-dom"
+import { Outlet, NavLink, useLocation, Link } from "react-router-dom"
 import {
   Sidebar,
   SidebarContent,
@@ -10,86 +9,145 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger
 } from './components/ui/sidebar'
-import { Home, Users, Settings } from "lucide-react"
+import {
+  Home, Users, Settings, ChevronDown, UserCircle,
+  CreditCard, ShieldCheck, Briefcase, Globe, Wifi, LogOut
+} from "lucide-react"
 import { Separator } from "./components/ui/separator"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./components/ui/collapsible"
 import './index.css'
 
 function App() {
   const location = useLocation();
 
-  const menuItems = [
-    { title: "الرئيسية", path: "/", icon: <Home />, end: true },
-    { title: "المستخدمين", path: "/users", icon: <Users />, end: false },
-    { title: "الإعدادات", path: "/settings", icon: <Settings />, end: false },
+  const menuGroups = [
+    {
+      title: "إدارة المستخدمين",
+      icon: <Users />,
+      items: [
+        { title: "قائمة المستخدمين", path: "/users", icon: <UserCircle size={20} /> },
+        { title: "اشتراكات المستخدمين", path: "/subscriptions", icon: <CreditCard size={20} /> },
+      ]
+    },
+    {
+      title: "إدارة الموظفين",
+      icon: <Briefcase />,
+      items: [
+        { title: "قائمة الموظفين", path: "/employees", icon: <Users size={20} /> },
+        { title: "صلاحيات الموظفين", path: "/employees-permissions", icon: <ShieldCheck size={20} /> },
+      ]
+    },
+    {
+      title: "إدارة الباقات",
+      icon: <Globe />,
+      items: [
+        { title: "باقات الإنترنت", path: "/plans", icon: <Wifi size={20} /> },
+      ]
+    },
+    {
+      title: "إدارة النقاط",
+      icon: <Wifi />,
+      items: [
+        { title: "نقاط الإنترنت", path: "/access-points", icon: <Globe size={20} /> },
+      ]
+    }
   ];
-
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen ">
-
+      <div className="flex h-screen w-full">
         <Sidebar collapsible="icon">
 
           {/* Header */}
           <SidebarHeader className="text-right p-4">
-            <p className="group-data-[collapsible=icon]:hidden">الإدارة</p>
-            <p className="hidden group-data-[collapsible=icon]:block"></p>
+            <Link to={'/'} className="group-data-[collapsible=icon]:hidden font-bold text-xl">الإدارة</Link>
           </SidebarHeader>
+
           <Separator />
-          {/* Content */}
-          <SidebarContent className="pt-9">
 
-            <SidebarGroup >
+          <SidebarContent className="pt-6">
+            <SidebarGroup>
               <SidebarGroupContent>
-
                 <SidebarMenu className="gap-4">
-                  {menuItems.map((item) => (
 
-                    <SidebarMenuItem key={item.path}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={location.pathname === item.path}
-                        className="data-[active=true]:bg-mist-800 data-[active=true]:text-white"
-                      >
-                        <NavLink to={item.path} end={item.end} className="flex items-center gap-2 w-full p-2">
-                          {item.icon}
-                          <span className="text-lg">{item.title}</span>
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={location.pathname === "/"} className="h-12">
+                      <NavLink to="/" end className="flex items-center gap-3 w-full p-2 text-xl font-medium">
+                        <Home size={24} /> <span>لوحة التحكم</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  {menuGroups.map((group, index) => (
+                    <Collapsible key={index} className="group/collapsible">
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton className="h-12 text-xl font-medium">
+                            {group.icon}
+                            <span>{group.title}</span>
+                            <ChevronDown className="mr-auto h-5 w-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+
+                        <CollapsibleContent>
+                          <SidebarMenuSub className="mr-4 border-r-2 border-stone-200 gap-2 mt-1">
+                            {group.items.map((subItem) => (
+                              <SidebarMenuSubItem key={subItem.path}>
+                                <SidebarMenuSubButton asChild isActive={location.pathname === subItem.path} className="h-10">
+                                  <NavLink to={subItem.path} className="flex items-center gap-3 text-lg py-2">
+                                    {subItem.icon}
+                                    <span>{subItem.title}</span>
+                                  </NavLink>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </SidebarMenuItem>
+                    </Collapsible>
                   ))}
-                </SidebarMenu>
 
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={location.pathname === "/settings"} className="h-12 mt-4">
+                      <NavLink to="/settings" className="flex items-center gap-3 w-full p-2 text-xl font-medium">
+                        <Settings size={24} /> <span>الإعدادات</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-
           </SidebarContent>
 
-          {/* footer */}
-          <SidebarFooter className="p-4 border-t space-y-2">
-
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gray-300"></div>
+          {/* Footer */}
+          <SidebarFooter className="p-4 border-t space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-stone-200 border border-stone-300 flex items-center justify-center font-bold">A</div>
               <div className="group-data-[collapsible=icon]:hidden text-right">
-                <p className=" font-medium">Admin</p>
-                <p className="text-xs opacity-60">Online</p>
+                <p className="font-bold text-lg leading-none">المدير</p>
+                <p className="text-sm opacity-60">متصل الآن</p>
               </div>
-
             </div>
 
-            <button className="w-full cursor-pointer text-sm bg-black text-white py-1 rounded group-data-[collapsible=icon]:hidden">
-              Logout
+            <button className="w-full cursor-pointer flex items-center justify-center gap-2  bg-black hover:bg-stone-800 text-white py-1 rounded-md group-data-[collapsible=icon]:hidden transition-colors">
+              <LogOut size={18} />
+              <span >تسجيل الخروج</span>
             </button>
-
           </SidebarFooter>
         </Sidebar>
 
-
-        <main className="flex-1 p-6">
-          <SidebarTrigger />
+        {/* main */}
+        <main className="flex-1 p-6 bg-stone-50 overflow-auto">
+          <header className="mb-6">
+            <SidebarTrigger className="hover:bg-stone-200" />
+          </header>
           <Outlet />
         </main>
 
