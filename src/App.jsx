@@ -1,5 +1,5 @@
 
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, NavLink, useLocation } from "react-router-dom"
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +14,18 @@ import {
   SidebarTrigger
 } from './components/ui/sidebar'
 import { Home, Users, Settings } from "lucide-react"
+import { Separator } from "./components/ui/separator"
+import './index.css'
 
 function App() {
+  const location = useLocation();
+
+  const menuItems = [
+    { title: "الرئيسية", path: "/", icon: <Home />, end: true },
+    { title: "المستخدمين", path: "/users", icon: <Users />, end: false },
+    { title: "الإعدادات", path: "/settings", icon: <Settings />, end: false },
+  ];
+
 
   return (
     <SidebarProvider>
@@ -28,41 +38,29 @@ function App() {
             <p className="group-data-[collapsible=icon]:hidden">الإدارة</p>
             <p className="hidden group-data-[collapsible=icon]:block"></p>
           </SidebarHeader>
-
+          <Separator />
           {/* Content */}
-          <SidebarContent>
+          <SidebarContent className="pt-9">
 
             <SidebarGroup >
               <SidebarGroupContent>
 
-                <SidebarMenu>
-                  <SidebarMenuItem>
+                <SidebarMenu className="gap-4">
+                  {menuItems.map((item) => (
 
-                    <SidebarMenuButton asChild>
-                      <Link to="/">
-                        <Home />
-                        <span>الرئيسية</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link to="/">
-                        <Users />
-                        <span>المستخدمين</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link to="/">
-                        <Settings />
-                        <span>الإعدادات</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                    <SidebarMenuItem key={item.path}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={location.pathname === item.path}
+                        className="data-[active=true]:bg-mist-800 data-[active=true]:text-white"
+                      >
+                        <NavLink to={item.path} end={item.end} className="flex items-center gap-2 w-full p-2">
+                          {item.icon}
+                          <span className="text-lg">{item.title}</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
                 </SidebarMenu>
 
               </SidebarGroupContent>
@@ -82,7 +80,7 @@ function App() {
 
             </div>
 
-            <button className="w-full text-sm bg-black text-white py-1 rounded group-data-[collapsible=icon]:hidden">
+            <button className="w-full cursor-pointer text-sm bg-black text-white py-1 rounded group-data-[collapsible=icon]:hidden">
               Logout
             </button>
 
