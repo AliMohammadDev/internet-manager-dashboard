@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useLocation, Link } from "react-router-dom"
+import { Outlet, NavLink, useLocation, Link, useNavigate } from "react-router-dom"
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
   SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub,
@@ -12,9 +12,27 @@ import {
 import { Separator } from "./components/ui/separator"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./components/ui/collapsible"
 import './index.css'
+import { useState } from "react"
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // open close collapsible
+  const [openGroups, setOpenGroups] = useState(() => {
+    const saved = localStorage.getItem("open_sidebar_groups");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const toggleGroup = (title) => {
+    setOpenGroups((prev) => {
+      const next = prev.includes(title)
+        ? prev.filter((t) => t !== title)
+        : [...prev, title];
+      localStorage.setItem("open_sidebar_groups", JSON.stringify(next));
+      return next;
+    });
+  };
+
 
   const menuGroups = [
     {
@@ -60,7 +78,12 @@ function App() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   {menuGroups.map((group, index) => (
-                    <Collapsible key={index} className="group/collapsible">
+                    <Collapsible
+                      key={index}
+                      className="group/collapsible"
+                      open={openGroups.includes(group.title)}
+                      onOpenChange={() => toggleGroup(group.title)}
+                    >
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton className="h-12 text-xl font-medium">
@@ -105,8 +128,12 @@ function App() {
                 <p className="text-sm opacity-60">متصل الآن</p>
               </div>
             </div>
-            <button className="w-full cursor-pointer flex items-center justify-center gap-2 bg-black hover:bg-stone-800 text-white py-1 rounded-md group-data-[collapsible=icon]:hidden">
-              <LogOut size={18} /> <span>تسجيل الخروج</span>
+            <button
+              onClick={() => navigate('/logout')}
+              className="w-full cursor-pointer flex items-center justify-center gap-2 bg-black hover:bg-stone-800 text-white py-2 rounded-md group-data-[collapsible=icon]:hidden font-cairo transition-all"
+            >
+              <LogOut size={18} />
+              <span>تسجيل الخروج</span>
             </button>
           </SidebarFooter>
         </Sidebar>
@@ -116,9 +143,7 @@ function App() {
             <SidebarTrigger />
 
             <div className="flex items-center gap-4">
-              <button className="p-2 text-stone-500 hover:bg-stone-100 rounded-full transition-colors cursor-pointer">
-                <Search size={20} />
-              </button>
+
               <button className="p-2 text-stone-500 hover:bg-stone-100 rounded-full transition-colors cursor-pointer">
                 <MessageSquare size={20} />
               </button>
