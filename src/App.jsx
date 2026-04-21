@@ -22,6 +22,9 @@ import {
 import { Separator } from "./components/ui/separator"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./components/ui/collapsible"
 import './index.css'
+import { CreditCardIcon } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
+import { Users2 } from "lucide-react"
 
 function App() {
   const location = useLocation();
@@ -33,6 +36,7 @@ function App() {
       items: [
         { title: "قائمة المستخدمين", path: "/users", icon: <UserCircle size={20} /> },
         { title: "اشتراكات المستخدمين", path: "/subscriptions", icon: <CreditCard size={20} /> },
+        { title: "قائمة الزبائن", path: "/customers", icon: <Users2 size={20} /> },
       ]
     },
     {
@@ -56,7 +60,16 @@ function App() {
       items: [
         { title: "نقاط الإنترنت", path: "/access-points", icon: <Globe size={20} /> },
       ]
-    }
+    },
+
+    {
+      title: "المالية",
+      icon: <CreditCardIcon />,
+      items: [
+        { title: "المدفوعات", path: "/payments", icon: <CreditCard size={20} /> },
+        { title: "المصروفات", path: "/expenses", icon: <ArrowUpRight size={20} className="text-red-500" /> },
+      ]
+    },
   ];
 
   return (
