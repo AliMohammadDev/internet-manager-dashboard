@@ -5,21 +5,21 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
-    const queryClient = useQueryClient();
-    const navigate = useNavigate();
-    const cookies = Cookie();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const cookies = Cookie();
 
-    useEffect(() => {
-        queryClient.clear();
+  useEffect(() => {
+    queryClient.clear();
 
-        cookies.remove("token", { path: "/" });
+    cookies.remove("token", { path: "/" });
 
-        delete axios.defaults.headers.common["Authorization"];
+    delete axios.defaults.headers.common["Authorization"];
 
-        navigate("/login", { replace: true });
-    }, [queryClient, navigate, cookies]);
+    navigate("/login", { replace: true });
+  }, [queryClient, navigate, cookies]);
 
-    return null;
+  return null;
 };
 
 export default Logout;
