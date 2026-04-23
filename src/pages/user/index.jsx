@@ -162,6 +162,7 @@ function User() {
           <>
             {/* table */}
             <div className="w-full overflow-x-auto">
+
               <Table>
                 <TableHeader className="bg-stone-50/50">
                   <TableRow>
@@ -173,6 +174,7 @@ function User() {
                   </TableRow>
                 </TableHeader>
                 {/* data */}
+
                 <TableBody>
                   {filteredUsers.map((user) => (
                     <TableRow key={user.id} className="hover:bg-stone-50/40 transition-colors border-b border-stone-100">
@@ -211,7 +213,7 @@ function User() {
                               onClick={() => openEditModal(user.id)}
                               className="flex items-center justify-end gap-2 cursor-pointer py-2">
                               <span>تعديل البيانات</span>
-                              <Edit size={16} />
+                              <Edit size={16} className='text-blue-500' />
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               className="flex items-center justify-end gap-2 cursor-pointer text-red-600 focus:text-red-600 py-2"

@@ -13,6 +13,10 @@ import { Separator } from "./components/ui/separator"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./components/ui/collapsible"
 import './index.css'
 import { useState } from "react"
+import { Network } from "lucide-react"
+import { Layers } from "lucide-react"
+import { MapPin } from "lucide-react"
+import { Zap } from "lucide-react"
 
 function App() {
   const location = useLocation();
@@ -36,10 +40,34 @@ function App() {
 
   const menuGroups = [
     {
+      title: "إدارة الشبكات",
+      icon: <Network size={22} />,
+      items: [
+        { title: "شبكات الانترنت", path: "/networks", icon: <Globe size={20} /> }
+      ]
+    },
+
+
+
+    {
+      title: "إدارة الباقات",
+      icon: <Layers size={22} />,
+      items: [
+        { title: "باقات الإنترنت", path: "/plans", icon: <Zap size={20} /> }
+      ]
+    },
+    {
+      title: "إدارة النقاط",
+      icon: <MapPin size={22} />,
+      items: [
+        { title: "نقاط الإنترنت", path: "/access-points", icon: <Wifi size={20} /> }
+      ]
+    },
+    {
       title: "إدارة المستخدمين", icon: <Users />, items: [
         { title: "قائمة المستخدمين", path: "/users", icon: <UserCircle size={20} /> },
-        { title: "اشتراكات المستخدمين", path: "/subscriptions", icon: <CreditCard size={20} /> },
         { title: "قائمة الزبائن", path: "/customers", icon: <Users2 size={20} /> },
+        { title: "اشتراكات الزبائن", path: "/subscriptions", icon: <CreditCard size={20} /> },
       ]
     },
     {
@@ -48,8 +76,6 @@ function App() {
         { title: "صلاحيات الموظفين", path: "/employees-permissions", icon: <ShieldCheck size={20} /> },
       ]
     },
-    { title: "إدارة الباقات", icon: <Globe />, items: [{ title: "باقات الإنترنت", path: "/plans", icon: <Wifi size={20} /> }] },
-    { title: "إدارة النقاط", icon: <Wifi />, items: [{ title: "نقاط الإنترنت", path: "/access-points", icon: <Globe size={20} /> }] },
     {
       title: "المالية", icon: <CreditCardIcon />, items: [
         { title: "المدفوعات", path: "/payments", icon: <CreditCard size={20} /> },

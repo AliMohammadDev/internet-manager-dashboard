@@ -14,6 +14,7 @@ import User from "@/pages/user";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/pages/NotFound";
+import Network from "@/pages/network";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
           { path: 'users', element: <User /> },
           { path: 'customers', element: <Customer /> },
           { path: 'employees', element: <Employee /> },
+          { path: 'networks', element: <Network /> },
           { path: 'plans', element: <Plan /> },
           { path: 'subscriptions', element: <Subscription /> },
           { path: 'access-points', element: <Point /> },

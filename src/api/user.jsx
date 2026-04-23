@@ -72,7 +72,7 @@ export const useEditUser = (onSuccessCallback) => {
         throw new Error(message);
       }
     },
-    onSuccess: (updatedUser) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("تم التعديل بنجاح");
       if (onSuccessCallback) onSuccessCallback();
@@ -92,7 +92,7 @@ export const useDeleteUser = () => {
       await axios.delete(`user/remove/${userId}`);
       return userId;
     },
-    onSuccess: (userId) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast.success("تم حذف المستخدم");
     },
