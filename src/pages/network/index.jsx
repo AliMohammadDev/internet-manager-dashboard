@@ -8,6 +8,8 @@ import { useGetNetworks } from "@/api/network"
 import CreateNetwork from './CreateNetwork'
 import EditNetwork from './EditNetwork'
 import DeleteNetwork from './DeleteNetwork'
+import Cookie from "cookie-universal";
+import { jwtDecode } from "jwt-decode";
 
 function Network() {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -15,27 +17,44 @@ function Network() {
   const [deleteId, setDeleteId] = useState(null);
   const [targetName, setTargetName] = useState("");
 
-  const userId = 1;
+  const cookies = Cookie();
+  const token = cookies.get("token");
+  let userId = null;
 
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      userId = decoded.userId;
+    } catch (error) {
+      console.error(error);
+    }
+  }
   const { data, isLoading, isError } = useGetNetworks(1, 10, userId);
 
   return (
     <div className="p-6 font-cairo" dir="rtl">
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 font-cairo">
         <div>
           <h1 className="text-3xl font-black text-stone-900 flex items-center gap-3">
-            <NetworkIcon size={32} className="text-stone-700" />
+            <NetworkIcon size={32} className="text-stone-800 hidden md:block" />
             إدارة الشبكات
           </h1>
-          <p className="text-stone-500 mt-1">متابعة وتوسيع نطاق تغطية إنترنت  </p>
+          <p className="text-stone-500 mt-1 font-medium">
+            متابعة وتوسيع نطاق تغطية الإنترنت وإدارة النقاط التابعة.
+          </p>
         </div>
-        <Button
-          onClick={() => setIsAddOpen(true)}
-          className="bg-stone-900 hover:bg-stone-800 text-white px-8 h-12 rounded-2xl font-bold gap-2 shadow-lg transition-all active:scale-95 shadow-stone-200"
-        >
-          <Plus size={20} /> إضافة شبكة جديدة
-        </Button>
+
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setIsAddOpen(true)}
+            className="w-full md:w-auto bg-stone-900 hover:bg-stone-800 text-white px-6 h-12 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-stone-200 transition-all active:scale-95"
+          >
+            <Plus size={20} />
+            <span>إضافة شبكة جديدة</span>
+          </Button>
+        </div>
       </div>
+
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center h-80 gap-4">
@@ -54,34 +73,57 @@ function Network() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
           {data?.items?.length > 0 ? (
             data.items.map((net) => (
-              <Card key={net.id} className="border-none shadow-md hover:shadow-2xl transition-all duration-300 rounded-[32px] overflow-hidden group border border-transparent hover:border-stone-200 bg-white">
-                <CardHeader className="bg-stone-50/50 pb-4 relative">
-                  <div className="flex justify-between items-start">
-                    <Badge className={`${net.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"} border-none px-4 py-1 rounded-full text-xs font-bold`}>
+              <Card
+                key={net.id}
+                className="relative border border-stone-100 bg-white/80 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-300 rounded-[28px] overflow-hidden group hover:-translate-y-1"
+              >
+                {/* Status bar */}
+                <div className={`absolute top-0 right-0 w-full h-1 ${net.active ? "bg-green-400" : "bg-red-400"}`} />
+
+                <CardHeader className="pb-2 pt-5 px-5">
+                  <div className="flex justify-between items-center">
+
+                    {/* Status Badge */}
+                    <Badge
+                      className={`${net.active
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                        } border-none px-3 py-1 rounded-full text-xs font-bold`}
+                    >
                       {net.active ? "نشطة" : "متوقفة"}
                     </Badge>
 
+                    {/* Actions */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-9 w-9 p-0 hover:bg-white rounded-full transition-colors">
-                          <MoreHorizontal size={20} className="text-stone-400" />
+                        <Button
+                          variant="ghost"
+                          className="h-9 w-9 p-0 rounded-full hover:bg-stone-100 transition"
+                        >
+                          <MoreHorizontal size={18} className="text-stone-400" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="font-cairo text-right min-w-40 rounded-2xl p-2 shadow-xl border-stone-100">
+
+                      <DropdownMenuContent
+                        align="end"
+                        className="font-cairo text-right min-w-40 rounded-2xl p-2 shadow-xl border border-stone-100"
+                      >
                         <DropdownMenuItem
                           onClick={() => setEditId(net.id)}
-                          className="flex justify-end gap-3 cursor-pointer py-3 rounded-xl focus:bg-stone-50 transition-colors"
+                          className="flex justify-end gap-3 cursor-pointer py-3 rounded-xl focus:bg-stone-50"
                         >
                           <span className="font-bold text-stone-700">تعديل البيانات</span>
                           <Edit size={18} className="text-blue-500" />
                         </DropdownMenuItem>
+
                         <div className="h-px bg-stone-100 my-1" />
+
                         <DropdownMenuItem
                           onClick={() => {
                             setDeleteId(net.id);
                             setTargetName(net.name);
                           }}
-                          className="flex justify-end gap-3 text-red-600 cursor-pointer py-3 rounded-xl focus:bg-red-50 transition-colors"
+                          className="flex justify-end gap-3 text-red-600 cursor-pointer py-3 rounded-xl focus:bg-red-50"
                         >
                           <span className="font-bold">حذف الشبكة</span>
                           <Trash2 size={18} />
@@ -89,14 +131,24 @@ function Network() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  <CardTitle className="text-2xl font-black mt-6 text-stone-800 tracking-tight group-hover:text-stone-900 transition-colors">
+
+                  {/* Title */}
+                  <CardTitle className="text-xl font-extrabold mt-4 text-stone-800 group-hover:text-black transition">
                     {net.name}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-6 pb-8 space-y-4">
-                  <div className="flex items-center gap-3 text-stone-500 bg-stone-50 p-3 rounded-2xl border border-stone-100/50">
-                    <MapPin size={18} className="text-stone-400" />
-                    <span className="text-sm font-bold tracking-wide">{net.location}</span>
+
+                <CardContent className="px-5 pb-5 pt-3 space-y-4">
+
+                  {/* Location */}
+                  <div className="flex items-center gap-2 text-stone-500 text-sm bg-stone-50 px-3 py-2 rounded-xl border border-stone-100">
+                    <MapPin size={16} className="text-800-400" />
+                    <span className="font-medium ">{net.location}</span>
+                  </div>
+
+                  {/* Optional: Quick Info Row */}
+                  <div className="flex justify-between text-xs text-stone-800 pt-2">
+                    <span>{net.active ? "Online" : "Offline"}</span>
                   </div>
                 </CardContent>
               </Card>

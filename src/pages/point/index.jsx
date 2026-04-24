@@ -1,68 +1,287 @@
-import React from 'react'
-import { Wifi, Plus, MapPin, SignalHigh, Server } from "lucide-react"
+import React, { useState } from "react";
+import {
+  Search, Filter, MapPin, MoreVerticalIcon, Edit, Trash2,
+  Loader2, Network as NetworkIcon, Plus, Info, Signal
+} from "lucide-react";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from "@/components/ui/table";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  Pagination, PaginationContent, PaginationItem, PaginationLink,
+  PaginationNext, PaginationPrevious
+} from "@/components/ui/pagination";
+import { useGetPoints } from "@/api/point";
+import EditPoint from "./EditPoint";
+import DeletePoint from "./DeletePoint";
+import CreatePoint from "./CreatePoint";
+import { ZapOff } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-function Point() {
+
+function Points() {
+  const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const [isAddOpen, setIsAddOpen] = useState(false);
+
+
+
+  const { data, isLoading, isError } = useGetPoints(page, 10, 1);
+  const points = data?.items || [];
+  const meta = data?.meta || { total_pages: 0, current_page: 1, total: 0 };
+
+  const [selectedPointId, setSelectedPointId] = useState(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const [deletePointId, setDeletePointId] = useState(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const filteredPoints = points.filter((point) => {
+    const matchesSearch = point.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      point.location.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = statusFilter === "all" ? true :
+      statusFilter === "active" ? point.active === true :
+        point.active === false;
+
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 font-cairo">
         <div>
-          <h1 className="text-3xl font-bold text-stone-900">إدارة نقاط البث</h1>
-          <p className="text-stone-500 mt-1">متابعة نقاط تقوية الشبكة الموزعة في الشوارع والمناطق.</p>
+          <h1 className="text-3xl font-bold text-stone-900">نقاط التوزيع</h1>
+          <p className="text-stone-500 mt-1">إدارة نقاط البث والأجهزة المرتبطة بالشبكة.</p>
         </div>
-        <button className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-md hover:bg-stone-800 transition-colors cursor-pointer font-bold">
-          <Plus size={20} />
-          <span>إضافة نقطة بث</span>
-        </button>
+        <CreatePoint
+          open={isAddOpen}
+          setOpen={setIsAddOpen}
+          networkId={1}
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white border border-stone-200 rounded-xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
-            <Server size={24} />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-cairo">
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4 group">
+          <div className="w-12 h-12 bg-stone-900 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-stone-200">
+            <Signal size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500">إجمالي النقاط</p>
-            <p className="text-2xl font-bold">12</p>
+            <p className="text-sm text-stone-500 uppercase font-bold tracking-wider">إجمالي النقاط</p>
+            <p className="text-2xl font-black text-stone-900">{meta.total}</p>
           </div>
         </div>
 
-        <div className="p-4 bg-white border border-stone-200 rounded-xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center">
-            <SignalHigh size={24} />
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4 group hover:border-green-200 transition-colors">
+          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
+            <ShieldCheck size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500">نقاط نشطة (Online)</p>
-            <p className="text-2xl font-bold">10</p>
+            <p className="text-sm text-stone-500 uppercase font-bold tracking-wider">نقاط متصلة</p>
+            <p className="text-2xl font-black text-green-600">
+              {points.filter(p => p.active).length}
+            </p>
           </div>
         </div>
 
-        <div className="p-4 bg-white border border-stone-200 rounded-xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center">
-            <activity size={24} />
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4 group hover:border-orange-200 transition-colors">
+          <div className="w-12 h-12 bg-orange-50 text-red-600 rounded-2xl flex items-center justify-center">
+            <ZapOff size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500">نقاط خارج الخدمة</p>
-            <p className="text-2xl font-bold">2</p>
+            <p className="text-sm text-stone-500 uppercase font-bold tracking-wider">نقاط منقطعة</p>
+            <p className="text-2xl font-black text-red-600">
+              {points.filter(p => !p.active).length}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-stone-200 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
-        <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center text-stone-400">
-          <MapPin size={32} />
+      {/* Filters & Search */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400" size={20} />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="ابحث عن نقطة معينة..."
+            className="w-full p-3 pr-10 border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-400 transition-all bg-white font-cairo"
+          />
         </div>
-        <div>
-          <h3 className="text-lg font-medium text-stone-900">لم يتم تحديد مواقع النقاط بعد</h3>
-          <p className="text-stone-500 text-lg">يمكنك هنا إضافة المواقع الجغرافية (الشوارع) لكل نقطة تقوية.</p>
-        </div>
-        <div className="flex gap-4">
-          <button className="text-sm font-bold bg-stone-100 px-4 py-2 rounded-md hover:bg-stone-200 transition-all cursor-pointer">
-            عرض الخريطة
-          </button>
+
+        <div className="flex items-center gap-2 bg-white border border-stone-200 rounded-2xl px-3 min-w-45 shadow-sm">
+          <Filter size={18} className="text-stone-400" />
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="border-0 focus:ring-0 font-cairo text-stone-600 shadow-none w-full">
+              <SelectValue placeholder="الحالة" />
+            </SelectTrigger>
+            <SelectContent dir="rtl" className="font-cairo">
+              <SelectItem value="all">جميع الحالات</SelectItem>
+              <SelectItem value="active">نشطة</SelectItem>
+              <SelectItem value="inactive">غير نشطة</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
+      {/* Table Section */}
+      <div className="bg-white border border-stone-200 rounded-[28px] shadow-sm overflow-hidden">
+        {isLoading ? (
+          <div className="p-20 text-center text-stone-500 font-bold font-cairo flex flex-col items-center gap-3">
+            <Loader2 className="animate-spin text-stone-400" size={32} />
+            جاري تحميل النقاط...
+          </div>
+        ) : filteredPoints.length > 0 ? (
+          <div className="w-full overflow-x-auto">
+
+            <Table>
+              <TableHeader className="bg-stone-50/50">
+                <TableRow>
+                  <TableHead className="text-right font-bold text-stone-800 p-5">اسم النقطة</TableHead>
+                  <TableHead className="text-right font-bold text-stone-800 p-5">الموقع</TableHead>
+                  <TableHead className="text-right font-bold text-stone-800 p-5">الحالة</TableHead>
+                  <TableHead className="text-left font-bold text-stone-800 p-5">إجراءات</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredPoints.map((point) => (
+                  <TableRow key={point.id} className="group hover:bg-stone-50/40 transition-colors border-b border-stone-100">
+                    <TableCell className="p-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white group-hover:shadow-sm transition-all">
+                          <NetworkIcon size={18} />
+                        </div>
+                        <span className="text-stone-900 font-bold">{point.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-5 text-right font-medium text-stone-600">
+                      <div className="flex items-center gap-2">
+                        <MapPin size={14} className="text-stone-400" />
+                        {point.location}
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-5 text-right">
+                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black ${point.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                        {point.active ? "متصلة" : "منقطعة"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="p-5 text-left">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="p-2 hover:bg-stone-100 rounded-xl transition-colors">
+                          <MoreVerticalIcon size={18} className="text-stone-400" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-48 font-cairo text-right rounded-2xl p-2 shadow-xl border-stone-100">
+                          <DropdownMenuItem
+                            onClick={() => { setSelectedPointId(point.id); setIsEditOpen(true); }}
+                            className="flex items-center justify-end gap-2 cursor-pointer py-2.5 rounded-xl"
+                          >
+                            <span>تعديل النقطة</span>
+                            <Edit size={16} className="text-blue-500" />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => { setDeletePointId(point.id); setIsDeleteOpen(true); }}
+                            className="flex items-center justify-end gap-2 cursor-pointer text-red-600 py-2.5 rounded-xl focus:bg-red-50 focus:text-red-600"
+                          >
+                            <span>حذف النقطة</span>
+                            <Trash2 size={16} />
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            {/* pagination */}
+            <div className="p-4 border-t border-stone-100 bg-stone-50/30 flex flex-col items-center gap-3">
+              <Pagination>
+                <PaginationContent className="flex-row-reverse gap-1">
+
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); if (page > 1) setPage(page - 1); }}
+                      className={`${page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-stone-100`}
+                      label="السابق"
+                    />
+                  </PaginationItem>
+
+                  {[...Array(meta.total_pages)].map((_, i) => {
+                    const pageNum = i + 1;
+                    if (
+                      pageNum === 1 ||
+                      pageNum === meta.total_pages ||
+                      (pageNum >= page - 1 && pageNum <= page + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            href="#"
+                            isActive={page === pageNum}
+                            onClick={(e) => { e.preventDefault(); setPage(pageNum); }}
+                            className="cursor-pointer"
+                          >
+                            {pageNum}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+
+                    if (pageNum === page - 2 || pageNum === page + 2) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <span className="px-2 text-stone-400">...</span>
+                        </PaginationItem>
+                      );
+                    }
+
+                    return null;
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); if (page < meta.total_pages) setPage(page + 1); }}
+                      className={`${page === meta.total_pages ? "pointer-events-none opacity-50" : "cursor-pointer"} hover:bg-stone-100`}
+                      label="التالي"
+                    />
+                  </PaginationItem>
+
+                </PaginationContent>
+              </Pagination>
+
+              <div className="flex items-center gap-2 text-xs text-stone-400 font-cairo">
+                <span>إجمالي المستخدمين: <span className="font-bold text-stone-600">{meta.total}</span></span>
+                <span className="w-1 h-1 bg-stone-300 rounded-full"></span>
+                <span>صفحة {meta.current_page} من {meta.total_pages}</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-stone-50 rounded-[40px] border-2 border-dashed border-stone-200">
+            <NetworkIcon size={48} className="text-stone-200" />
+            <p className="text-stone-500 font-bold">لا توجد نقاط توزيع مضافة حالياً</p>
+            <Button variant="link" onClick={() => setIsAddOpen(true)} className="text-stone-600 underline">أضف أول نقطة الآن</Button>
+          </div>
+        )}
+      </div>
+
+      <EditPoint id={selectedPointId} open={isEditOpen} setOpen={setIsEditOpen} />
+      <DeletePoint id={deletePointId} open={isDeleteOpen} setOpen={setIsDeleteOpen} />
     </div>
-  )
+  );
 }
 
-export default Point
+export default Points;

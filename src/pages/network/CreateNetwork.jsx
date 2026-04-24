@@ -94,13 +94,13 @@ function CreateNetwork({ open, setOpen, userId }) {
                 className="data-[state=checked]:bg-green-600"
               />
             </div>
-          </div>
 
-          <DialogFooter className="flex-row-reverse gap-4 mt-10">
+          </div>
+          <DialogFooter className="flex flex-col-reverse md:flex-row-reverse gap-3 md:gap-4 mt-8 md:mt-10 font-cairo">
             <button
               type="submit"
               disabled={addNetworkMutation.isPending}
-              className="flex-2 bg-stone-900 text-white py-4 rounded-2xl font-bold hover:bg-stone-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-stone-100 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed text-base"
+              className="w-full md:flex-2 bg-stone-900 text-white py-4 rounded-2xl font-bold hover:bg-stone-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-stone-100 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed text-base"
             >
               {addNetworkMutation.isPending ? (
                 <Loader2 className="animate-spin" size={20} />
@@ -109,14 +109,17 @@ function CreateNetwork({ open, setOpen, userId }) {
               )}
               <span>{addNetworkMutation.isPending ? "جاري الإطلاق..." : "حفظ وإطلاق الشبكة"}</span>
             </button>
+
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="flex-1 px-6 py-4 border border-stone-200 rounded-2xl text-stone-500 font-bold hover:bg-stone-50 hover:text-stone-700 transition-all text-base"
+              className="w-full md:flex-1 px-6 py-4 border border-stone-200 rounded-2xl text-stone-500 font-bold hover:bg-stone-50 hover:text-stone-700 transition-all text-base"
             >
               إلغاء
             </button>
           </DialogFooter>
+
+
         </form>
       </DialogContent>
     </Dialog>

@@ -71,7 +71,7 @@ function User() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-stone-900">إدارة المشتركين</h1>
+          <h1 className="text-3xl font-bold text-stone-900"> إدارة المشتركين في النظام</h1>
           <p className="text-stone-500 mt-1">عرض بيانات مستخدمي الشبكة وإدارة حساباتهم وتفعيلها.</p>
         </div>
         {/* create user button */}

@@ -19,6 +19,7 @@
     "clsx": "^2.1.1",
     "cookie-universal": "^2.2.2",
     "install": "^0.13.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^1.8.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.5",

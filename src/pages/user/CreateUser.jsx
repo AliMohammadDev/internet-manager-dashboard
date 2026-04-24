@@ -122,11 +122,14 @@ function CreateUser() {
 
               <div className="flex items-center justify-between border border-stone-200 rounded-xl h-11 px-4 bg-stone-50/50">
                 <Label className="font-bold text-stone-700 cursor-pointer flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-stone-400" /> تفعيل الحساب
+                  <CheckCircle2 size={16}
+                    className={`${activeValue ? 'text-green-500' : 'text-stone-300'} transition-colors`}
+                  /> تفعيل الحساب
                 </Label>
                 <Switch
                   checked={activeValue}
                   onCheckedChange={(val) => setValue("active", val)}
+                  className="data-[state=checked]:bg-green-600"
                 />
               </div>
             </div>
