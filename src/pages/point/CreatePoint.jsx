@@ -16,18 +16,18 @@ import { useAddPoint } from "@/api/point";
 import { useGetNetworks } from "@/api/network";
 import pointSchema from "@/lib/pointSchema";
 
-function CreatePoint({ setOpen, open }) {
-  const { data: networksData, isLoading: isLoadingNetworks } = useGetNetworks(1, 100);
-  const networks = networksData?.items || [];
 
+function CreatePoint({ setOpen, open, userId, userRole }) {
   const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
     resolver: zodResolver(pointSchema),
     defaultValues: {
       active: true,
-      point_value: 1,
+      user_id: userId,
+      name: "",
       max_subscription: 100,
       count_subscription: 0,
-      notes: ""
+      notes: "",
+      network_id: ""
     }
   });
 
@@ -39,8 +39,16 @@ function CreatePoint({ setOpen, open }) {
     reset();
   });
 
+
+  const { data: networksData, isLoading: isLoadingNetworks } = useGetNetworks(1, 50, userId, userRole);
+  const networks = networksData?.items || [];
+
   const onSubmit = (values) => {
-    addMutation.mutate(values);
+    const finalData = {
+      ...values,
+      user_id: userId
+    };
+    addMutation.mutate(finalData);
   };
 
   return (
@@ -53,6 +61,7 @@ function CreatePoint({ setOpen, open }) {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-150 font-cairo p-8 rounded-[32px] max-h-[95vh] overflow-y-auto" dir="rtl">
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="text-right mb-6">
             <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3">
@@ -106,19 +115,21 @@ function CreatePoint({ setOpen, open }) {
                 {errors.network_id && <span className="text-xs text-red-500">{errors.network_id.message}</span>}
               </div>
 
-
               <div className="grid gap-2 text-right">
-                <Label className="font-bold text-stone-700 text-xs mr-1">قيمة النقطة</Label>
-                <Input type="number" {...register("point_value")} className="rounded-2xl h-12" />
+                <Label className="font-bold text-stone-700 text-xs mr-1">اسم النقطة *</Label>
+                <Input
+                  type="text"
+                  {...register("name")}
+                  placeholder="مثال: نقطة حي السلام"
+                  className={`rounded-2xl h-12 ${errors.name ? 'border-red-500' : 'border-stone-200'}`}
+                />
+                {errors.name && <span className="text-[10px] text-red-500">{errors.name.message}</span>}
               </div>
 
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700 text-xs mr-1">أقصى مشتركين</Label>
                 <Input type="number" {...register("max_subscription")} className="rounded-2xl h-12" />
               </div>
-
-
-
 
             </div>
 
@@ -168,6 +179,8 @@ function CreatePoint({ setOpen, open }) {
               إلغاء
             </button>
           </DialogFooter>
+
+
         </form>
       </DialogContent>
     </Dialog>

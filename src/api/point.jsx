@@ -2,11 +2,11 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-export const useGetPoints = (page = 1, limit = 10, networkId) => {
+export const useGetPoints = (page = 1, limit = 10, userId, userRole) => {
   return useQuery({
-    queryKey: ["points", page, limit, networkId],
+    queryKey: ["points", page, limit, userId],
     queryFn: async () => {
-      const res = await axios.post("/point/get-all", {
+      const payload = {
         pagination: {
           page: page,
           limit: limit
@@ -14,11 +14,14 @@ export const useGetPoints = (page = 1, limit = 10, networkId) => {
         sort: {
           by: "id",
           type: "DESC"
-        },
-        network_id: {
-          value: Number(networkId)
         }
-      });
+      };
+      if (userRole !== "admin") {
+        payload.user_id = {
+          value: Number(userId)
+        };
+      }
+      const res = await axios.post("/point/get-all", payload);
       return res.data;
     },
   });
