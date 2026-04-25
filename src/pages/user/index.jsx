@@ -168,6 +168,7 @@ function User() {
                   <TableRow>
                     <TableHead className="text-right font-bold text-stone-800 p-4">المشترك</TableHead>
                     <TableHead className="text-right font-bold text-stone-800 p-4">التواصل</TableHead>
+                    <TableHead className="text-right font-bold text-stone-800 p-4">الدور</TableHead>
                     <TableHead className="text-right font-bold text-stone-800 p-4">العنوان</TableHead>
                     <TableHead className="text-right font-bold text-stone-800 p-4">الحالة</TableHead>
                     <TableHead className="text-left font-bold text-stone-800 p-4">إجراءات</TableHead>
@@ -191,6 +192,14 @@ function User() {
                             <span dir="ltr">{user.phone}</span>
                           </div>
                         </div>
+                      </TableCell>
+                      <TableCell className="p-4 text-right">
+                        <span className={`inline-flex px-2.5 py-1 rounded-md text-[10px] font-bold border ${user.role === 'admin'
+                          ? "bg-purple-50 text-purple-700 border-purple-100"
+                          : "bg-blue-50 text-blue-700 border-blue-100"
+                          }`}>
+                          {user.role === 'admin' ? "مدير نظام" : "مستخدم"}
+                        </span>
                       </TableCell>
                       <TableCell className="p-4 text-right">
                         <div className="flex items-center gap-1.5 text-sm text-stone-600 justify-start">

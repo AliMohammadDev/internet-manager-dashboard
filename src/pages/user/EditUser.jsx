@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useGetUser, useEditUser } from '@/api/user'
 import { userSchema } from '@/lib/userSchema'
@@ -16,12 +16,14 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Loader2, Edit3, Save, Mail, Phone, MapPin, User as UserIcon, Lock, AlignLeft, CheckCircle2 } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ShieldCheck } from 'lucide-react'
 
 function EditUser({ userId, open, setOpen }) {
 
   const { data: user, isLoading: isFetching } = useGetUser(userId);
 
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, watch, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(userSchema),
   });
 
@@ -34,8 +36,8 @@ function EditUser({ userId, open, setOpen }) {
         address: user.address || '',
         description: user.description || '',
         active: user.active,
+        role: user.role,
         password: user.password || '',
-
       });
     }
   }, [user, reset]);
@@ -103,12 +105,34 @@ function EditUser({ userId, open, setOpen }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                 <div className="grid gap-2">
                   <Label className="font-bold text-stone-700 flex items-center gap-2">
                     <MapPin size={14} className="text-stone-400" /> العنوان
                   </Label>
                   <Input {...register("address")} className="border-stone-200 rounded-xl h-11" />
+                </div>
+
+                <div className="grid gap-2 text-right">
+                  <Label className="font-bold text-stone-700 flex items-center gap-2">
+                    <ShieldCheck size={14} /> الدور
+                  </Label>
+                  <Controller
+                    control={control}
+                    name="role"
+                    defaultValue="user"
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger className="rounded-xl h-11 border-stone-200 focus:ring-stone-400">
+                          <SelectValue placeholder="اختر الدور" />
+                        </SelectTrigger>
+                        <SelectContent className="font-cairo">
+                          <SelectItem value="user">مستخدم عادي</SelectItem>
+                          <SelectItem value="admin">مدير نظام</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
 
                 <div className="flex items-center justify-between border border-stone-200 rounded-xl h-11 px-4 bg-stone-50/50">

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { useAddUser } from '@/api/user'
 import {
   Dialog,
@@ -18,16 +17,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Loader2, UserPlus, Save, Mail, Phone, MapPin, User as UserIcon, Lock, AlignLeft, CheckCircle2 } from "lucide-react"
 import { userSchema } from '@/lib/userSchema'
-
+import { ShieldCheck } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 
 function CreateUser() {
   const [open, setOpen] = useState(false);
 
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, watch, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      active: true
+      description: "",
+      active: true,
+      role: "user"
     }
   });
 
@@ -86,7 +88,7 @@ function CreateUser() {
                   dir="ltr"
                   placeholder="09xxxxxxx"
                   className={`text-right rounded-xl h-11 
-                                    ${errors.phone ? 'border-red-500' : 'border-stone-200'}`} />
+                  ${errors.phone ? 'border-red-500' : 'border-stone-200'}`} />
                 {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
               </div>
             </div>
@@ -112,12 +114,36 @@ function CreateUser() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700 flex items-center gap-2">
                   <MapPin size={14} /> العنوان
                 </Label>
                 <Input {...register("address")} placeholder="المدينة، الحي" className="border-stone-200 rounded-xl h-11" />
+              </div>
+
+
+              <div className="grid gap-2 text-right">
+                <Label className="font-bold text-stone-700 flex items-center gap-2">
+                  <ShieldCheck size={14} /> الدور
+                </Label>
+                <Controller
+                  control={control}
+                  name="role"
+                  defaultValue="user"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="rounded-xl h-11 border-stone-200 focus:ring-stone-400">
+                        <SelectValue placeholder="اختر الدور" />
+                      </SelectTrigger>
+                      <SelectContent className="font-cairo">
+                        <SelectItem value="user">مستخدم عادي</SelectItem>
+                        <SelectItem value="admin">مدير نظام</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
 
               <div className="flex items-center justify-between border border-stone-200 rounded-xl h-11 px-4 bg-stone-50/50">
@@ -138,7 +164,8 @@ function CreateUser() {
               <Label className="font-bold text-stone-700 flex items-center gap-2">
                 <AlignLeft size={14} /> ملاحظات إضافية
               </Label>
-              <Textarea {...register("description")} placeholder="أضف أي تفاصيل هنا..." className="border-stone-200 rounded-xl min-h-[80px] resize-none" />
+              <Textarea {...register("description")} placeholder="أضف أي تفاصيل هنا..." className="border-stone-200 rounded-xl min-h-20 resize-none" />
+              {errors.description && <span className="text-xs text-red-500">{errors.description.message}</span>}
             </div>
           </div>
 
