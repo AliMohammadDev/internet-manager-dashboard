@@ -3,11 +3,11 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-export const useGetNetworks = (page = 1, limit = 10, userId) => {
+export const useGetNetworks = (page = 1, limit = 10, userId, role) => {
   return useQuery({
     queryKey: ["networks", page, limit, userId],
     queryFn: async () => {
-      const res = await axios.post("/network/get-all", {
+      const payload = {
         pagination: {
           page: page,
           limit: limit
@@ -15,11 +15,14 @@ export const useGetNetworks = (page = 1, limit = 10, userId) => {
         sort: {
           by: "id",
           type: "DESC"
-        },
-        user_id: {
-          value: Number(userId)
         }
-      });
+      };
+      if (role !== "admin") {
+        payload.user_id = {
+          value: Number(userId)
+        };
+      }
+      const res = await axios.post("/network/get-all", payload);
       return res.data;
     },
   });

@@ -20,16 +20,18 @@ function Network() {
   const cookies = Cookie();
   const token = cookies.get("token");
   let userId = null;
+  let userRole = null;
 
   if (token) {
     try {
       const decoded = jwtDecode(token);
       userId = decoded.userId;
+      userRole = decoded.role;
     } catch (error) {
       console.error(error);
     }
   }
-  const { data, isLoading, isError } = useGetNetworks(1, 10, userId);
+  const { data, isLoading, isError } = useGetNetworks(1, 10, userId, userRole);
 
   return (
     <div className="p-6 font-cairo" dir="rtl">
