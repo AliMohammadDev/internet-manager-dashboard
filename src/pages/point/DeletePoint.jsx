@@ -39,7 +39,6 @@ function DeletePoint({ pointId, open, setOpen }) {
             <AlertDialogDescription className="text-stone-600 text-lg leading-relaxed font-medium text-center font-cairo">
               هل أنت متأكد من حذف هذه النقطة؟
               <br />
-              <span className="text-sm text-red-400">سيؤدي هذا لقطع اتصال كافة المشتركين المرتبطين بها.</span>
             </AlertDialogDescription>
           </AlertDialogHeader>
 
