@@ -334,8 +334,8 @@ function Points() {
         )}
       </div>
 
-      <EditPoint id={selectedPointId} open={isEditOpen} setOpen={setIsEditOpen} />
-      <DeletePoint id={deletePointId} open={isDeleteOpen} setOpen={setIsDeleteOpen} />
+      <EditPoint pointId={selectedPointId} open={isEditOpen} setOpen={setIsEditOpen} userId={userId} userRole={userRole} />
+      <DeletePoint pointId={deletePointId} open={isDeleteOpen} setOpen={setIsDeleteOpen} userId={userId} userRole={userRole} />
     </div>
   );
 }
