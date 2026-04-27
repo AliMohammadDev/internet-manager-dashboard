@@ -41,19 +41,33 @@ function EditPoint({ pointId, open, setOpen, userId, userRole }) {
   }, [point, reset]);
 
   const activeValue = watch("active");
-  const networkIdValue = watch("network_id");
 
   const editMutation = useEditPoint(() => {
     setOpen(false);
   });
 
   const onSubmit = (values) => {
-    editMutation.mutate({ ...values, pointId });
+    editMutation.mutate({
+      ...values,
+      network_id: Number(values.network_id),
+      id: pointId
+    });
   };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-150 font-cairo p-8 rounded-[32px] max-h-[95vh] overflow-y-auto" dir="rtl">
+
+        <DialogHeader className="text-right mb-6">
+          <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3">
+            <div className="bg-amber-50 p-2.5 rounded-2xl text-amber-600">
+              <Edit3 size={24} />
+            </div>
+            <span style={{ fontFamily: 'Cairo' }}>تعديل نقطة التوزيع</span>
+          </DialogTitle>
+          <DialogDescription className="tex t-stone-500 font-bold">
+            تحديث البيانات الفنية للنقطة: <span className="text-stone-900">{point?.name}</span>
+          </DialogDescription>
+        </DialogHeader>
 
         {isFetchingPoint ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
@@ -62,17 +76,7 @@ function EditPoint({ pointId, open, setOpen, userId, userRole }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogHeader className="text-right mb-6">
-              <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3">
-                <div className="bg-amber-50 p-2.5 rounded-2xl text-amber-600">
-                  <Edit3 size={24} />
-                </div>
-                <span style={{ fontFamily: 'Cairo' }}>تعديل نقطة التوزيع</span>
-              </DialogTitle>
-              <DialogDescription className="text-stone-500 font-bold">
-                تحديث البيانات الفنية للنقطة: <span className="text-stone-900">{point?.name}</span>
-              </DialogDescription>
-            </DialogHeader>
+
 
             <div className="space-y-5 py-2">
               <div className="grid gap-2 text-right">
@@ -95,8 +99,8 @@ function EditPoint({ pointId, open, setOpen, userId, userRole }) {
                   </Label>
 
                   <Select
-                    onValueChange={(val) => setValue("network_id", Number(val))}
-                    value={networkIdValue?.toString()}
+                    defaultValue={point?.network_id}
+                    onValueChange={(val) => setValue("network_id", val)}
                   >
                     <SelectTrigger className={`rounded-2xl h-12 border-stone-200 ${errors.network_id ? 'border-red-500' : ''}`}>
                       <SelectValue placeholder={isLoadingNetworks ? "جاري التحميل..." : "اختر الشبكة"} />

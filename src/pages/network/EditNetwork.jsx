@@ -42,6 +42,19 @@ function EditNetwork({ networkId, open, setOpen }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-150 font-cairo p-10 overflow-hidden rounded-[32px]" dir="rtl">
+
+        <DialogHeader className="text-right mb-8">
+          <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3 font-cairo">
+            <div className="bg-amber-50 p-2.5 rounded-2xl text-amber-600">
+              <Edit3 size={24} />
+            </div>
+            تعديل بيانات الشبكة
+          </DialogTitle>
+          <DialogDescription className="text-stone-500 mt-2 text-base font-cairo">
+            أنت تقوم الآن بتحديث بيانات شبكة <span className="font-bold text-stone-800">{network?.name}</span>.
+          </DialogDescription>
+        </DialogHeader>
+
         {isFetching ? (
           <div className="flex flex-col justify-center items-center h-80 gap-4">
             <Loader2 className="animate-spin text-amber-600" size={48} />
@@ -49,17 +62,6 @@ function EditNetwork({ networkId, open, setOpen }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogHeader className="text-right mb-8">
-              <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3 font-cairo">
-                <div className="bg-amber-50 p-2.5 rounded-2xl text-amber-600">
-                  <Edit3 size={24} />
-                </div>
-                تعديل بيانات الشبكة
-              </DialogTitle>
-              <DialogDescription className="text-stone-500 mt-2 text-base font-cairo">
-                أنت تقوم الآن بتحديث بيانات شبكة <span className="font-bold text-stone-800">{network?.name}</span>.
-              </DialogDescription>
-            </DialogHeader>
 
             <div className="grid gap-6 py-2">
               <div className="grid gap-2 text-right">

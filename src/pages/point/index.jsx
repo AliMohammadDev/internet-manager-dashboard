@@ -25,6 +25,7 @@ import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Cookie from "cookie-universal";
 import { jwtDecode } from "jwt-decode";
+import { useGetNetworks } from "@/api/network";
 
 
 function Points() {
@@ -49,8 +50,10 @@ function Points() {
     }
   }
 
-  const { data: response, isLoading, isError } = useGetPoints(page, 10, userId, userRole);
+  const { data: networksData } = useGetNetworks(1, 100, userId, userRole);
+  const networks = networksData?.items || [];
 
+  const { data: response, isLoading, isError } = useGetPoints(page, 10, userId, userRole);
   const points = response?.data?.items || [];
   const meta = response?.data?.meta || { total_pages: 0, current_page: 1, total: 0 };
 
@@ -67,6 +70,7 @@ function Points() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const filteredPoints = points.filter((point) => {
+
     const pointName = String(point.name || "").toLowerCase();
     const pointLocation = String(point.location || "").toLowerCase();
     const search = searchTerm.toLowerCase();
@@ -172,96 +176,112 @@ function Points() {
                   <TableHead className="text-right font-bold text-stone-800 p-5">معلومات النقطة</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">الموقع</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">الاستهلاك / السعة</TableHead>
+                  <TableHead className="text-right font-bold text-stone-800 p-5">الشبكة التابعة</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">تاريخ الإضافة</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">الحالة</TableHead>
                   <TableHead className="text-left font-bold text-stone-800 p-5">إجراءات</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredPoints.map((point) => (
-                  <TableRow key={point.id} className="group hover:bg-stone-50/40 transition-colors border-b border-stone-100">
+                {filteredPoints.map((point) => {
 
-                    <TableCell className="p-5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-stone-100">
-                          <NetworkIcon size={18} />
+                  const networkName = networks.find(
+                    (net) => String(net.id) === String(point.network_id)
+                  )?.name || "غير محدد";
+                  return (
+                    <TableRow key={point.id} className="group hover:bg-stone-50/40 transition-colors border-b border-stone-100">
+
+                      <TableCell className="p-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-stone-100">
+                            <NetworkIcon size={18} />
+                          </div>
+                          <div className="flex flex-col text-right">
+                            <span className="text-stone-900 font-bold"> اسم النقطة: {String(point.name)}</span>
+                          </div>
                         </div>
-                        <div className="flex flex-col text-right">
-                          <span className="text-stone-900 font-bold"> اسم النقطة: {String(point.name)}</span>
+                      </TableCell>
+
+                      <TableCell className="p-5 text-right font-medium text-stone-600">
+                        <div className="flex items-center gap-2">
+                          <MapPin size={14} className="text-stone-400" />
+                          <span className="text-sm">{point.location}</span>
                         </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell className="p-5 text-right font-medium text-stone-600">
-                      <div className="flex items-center gap-2">
-                        <MapPin size={14} className="text-stone-400" />
-                        <span className="text-sm">{point.location}</span>
-                      </div>
-                    </TableCell>
-
-                    <TableCell className="p-5 text-right">
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center gap-2 justify-start">
-                          <span className="text-xs font-bold text-stone-700">{point.count_subscription}</span>
-                          <div className="flex-1 h-1.5 w-20 bg-stone-100 rounded-full overflow-hidden">
-                            <div
-                              className={`h-full rounded-full transition-all ${(point.count_subscription / point.max_subscription) > 0.9
+                      <TableCell className="p-5 text-right">
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 justify-start">
+                            <span className="text-xs font-bold text-stone-700">{point.count_subscription}</span>
+                            <div className="flex-1 h-1.5 w-20 bg-stone-100 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all ${(point.count_subscription / point.max_subscription) > 0.9
                                   ? "bg-red-500"
                                   : "bg-stone-800"
-                                }`}
-                              style={{ width: `${Math.min((point.count_subscription / (point.max_subscription || 1)) * 100, 100)}%` }}
-                            />
+                                  }`}
+                                style={{ width: `${Math.min((point.count_subscription / (point.max_subscription || 1)) * 100, 100)}%` }}
+                              />
+                            </div>
+                            <span className="text-xs text-stone-800">{point.max_subscription}</span>
                           </div>
-                          <span className="text-xs text-stone-400">{point.max_subscription}</span>
+                          <span className="text-[10px] text-stone-400">سعة المشتركين</span>
                         </div>
-                        <span className="text-[10px] text-stone-400">سعة المشتركين</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="p-5 text-right">
-                      <div className="text-xs text-stone-600 font-medium">
-                        {new Date(point.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell className="p-5 text-right">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black ${point.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                        }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${point.active ? "bg-green-500" : "bg-red-500"}`} />
-                        {point.active ? "متصلة" : "منقطعة"}
-                      </span>
-                    </TableCell>
+                      <TableCell className="p-5 text-right font-bold">
+                        <div className="flex items-center gap-2 text-stone-600 bg-stone-50 w-fit px-3 py-1.5 rounded-xl border border-stone-100">
+                          <span className="text-sm text-stone-800">{networkName}</span>
+                        </div>
+                      </TableCell>
 
-                    <TableCell className="p-5 text-left">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="p-2 hover:bg-stone-100 rounded-xl transition-colors outline-none">
-                          <MoreVerticalIcon size={18} className="text-stone-400" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-48 font-cairo text-right rounded-2xl p-2 shadow-xl border-stone-100">
-                          <DropdownMenuItem
-                            onClick={() => { setSelectedPointId(point.id); setIsEditOpen(true); }}
-                            className="flex items-center justify-end gap-2 cursor-pointer py-2.5 rounded-xl focus:bg-stone-50"
-                          >
-                            <span>تعديل البيانات</span>
-                            <Edit size={16} className="text-blue-500" />
-                          </DropdownMenuItem>
-                          <div className="h-px bg-stone-100 my-1" />
-                          <DropdownMenuItem
-                            onClick={() => { setDeletePointId(point.id); setIsDeleteOpen(true); }}
-                            className="flex items-center justify-end gap-2 cursor-pointer text-red-600 py-2.5 rounded-xl focus:bg-red-50 focus:text-red-600"
-                          >
-                            <span>حذف النقطة</span>
-                            <Trash2 size={16} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                      <TableCell className="p-5 text-right">
+                        <div className="text-xs text-stone-900 font-medium">
+                          {new Date(point.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </div>
+                      </TableCell>
 
-                  </TableRow>
-                ))}
+
+                      <TableCell className="p-5 text-right">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black ${point.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                          }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${point.active ? "bg-green-500" : "bg-red-500"}`} />
+                          {point.active ? "متصلة" : "منقطعة"}
+                        </span>
+                      </TableCell>
+
+
+                      <TableCell className="p-5 text-left">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger className="p-2 hover:bg-stone-100 rounded-xl transition-colors outline-none">
+                            <MoreVerticalIcon size={18} className="text-stone-400" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="w-48 font-cairo text-right rounded-2xl p-2 shadow-xl border-stone-100">
+                            <DropdownMenuItem
+                              onClick={() => { setSelectedPointId(point.id); setIsEditOpen(true); }}
+                              className="flex items-center justify-end gap-2 cursor-pointer py-2.5 rounded-xl focus:bg-stone-50"
+                            >
+                              <span>تعديل البيانات</span>
+                              <Edit size={16} className="text-blue-500" />
+                            </DropdownMenuItem>
+                            <div className="h-px bg-stone-100 my-1" />
+                            <DropdownMenuItem
+                              onClick={() => { setDeletePointId(point.id); setIsDeleteOpen(true); }}
+                              className="flex items-center justify-end gap-2 cursor-pointer text-red-600 py-2.5 rounded-xl focus:bg-red-50 focus:text-red-600"
+                            >
+                              <span>حذف النقطة</span>
+                              <Trash2 size={16} />
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
 
