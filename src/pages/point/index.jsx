@@ -49,9 +49,16 @@ function Points() {
     }
   }
 
-  const { data, isLoading, isError } = useGetPoints(page, 10, userId, userRole);
-  const points = data?.items || [];
-  const meta = data?.meta || { total_pages: 0, current_page: 1, total: 0 };
+  const { data: response, isLoading, isError } = useGetPoints(page, 10, userId, userRole);
+
+  const points = response?.data?.items || [];
+  const meta = response?.data?.meta || { total_pages: 0, current_page: 1, total: 0 };
+
+  const stats = {
+    total: response?.totalPoints || 0,
+    active: response?.activePoints || 0,
+    inactive: response?.inactivePoints || 0
+  };
 
   const [selectedPointId, setSelectedPointId] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -96,7 +103,7 @@ function Points() {
           </div>
           <div>
             <p className="text-sm text-stone-500 uppercase font-bold tracking-wider">إجمالي النقاط</p>
-            <p className="text-2xl font-black text-stone-900">{meta.total}</p>
+            <p className="text-2xl font-black text-stone-900">{stats.total.toLocaleString()}</p>
           </div>
         </div>
 
@@ -106,9 +113,7 @@ function Points() {
           </div>
           <div>
             <p className="text-sm text-stone-500 uppercase font-bold tracking-wider">نقاط متصلة</p>
-            <p className="text-2xl font-black text-green-600">
-              {points.filter(p => p.active).length}
-            </p>
+            <p className="text-2xl font-black text-green-600">{stats.active.toLocaleString()}</p>
           </div>
         </div>
 
@@ -118,9 +123,7 @@ function Points() {
           </div>
           <div>
             <p className="text-sm text-stone-500 uppercase font-bold tracking-wider">نقاط منقطعة</p>
-            <p className="text-2xl font-black text-red-600">
-              {points.filter(p => !p.active).length}
-            </p>
+            <p className="text-2xl font-black text-red-600">{stats.inactive.toLocaleString()}</p>
           </div>
         </div>
       </div>
@@ -202,16 +205,18 @@ function Points() {
                           <span className="text-xs font-bold text-stone-700">{point.count_subscription}</span>
                           <div className="flex-1 h-1.5 w-20 bg-stone-100 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-stone-800 rounded-full"
-                              style={{ width: `${Math.min((point.count_subscription / point.max_subscription) * 100, 100)}%` }}
+                              className={`h-full rounded-full transition-all ${(point.count_subscription / point.max_subscription) > 0.9
+                                  ? "bg-red-500"
+                                  : "bg-stone-800"
+                                }`}
+                              style={{ width: `${Math.min((point.count_subscription / (point.max_subscription || 1)) * 100, 100)}%` }}
                             />
                           </div>
                           <span className="text-xs text-stone-400">{point.max_subscription}</span>
                         </div>
-                        <span className="text-[10px] text-stone-400">إجمالي المشتركين المتاح</span>
+                        <span className="text-[10px] text-stone-400">سعة المشتركين</span>
                       </div>
                     </TableCell>
-
                     <TableCell className="p-5 text-right">
                       <div className="text-xs text-stone-600 font-medium">
                         {new Date(point.created_at).toLocaleDateString('en-US', {
@@ -319,7 +324,7 @@ function Points() {
               </Pagination>
 
               <div className="flex items-center gap-2 text-xs text-stone-400 font-cairo">
-                <span>إجمالي المستخدمين: <span className="font-bold text-stone-600">{meta.total}</span></span>
+                <span>إجمالي النقاط: <span className="font-bold text-stone-600">{meta.total}</span></span>
                 <span className="w-1 h-1 bg-stone-300 rounded-full"></span>
                 <span>صفحة {meta.current_page} من {meta.total_pages}</span>
               </div>
@@ -334,8 +339,20 @@ function Points() {
         )}
       </div>
 
-      <EditPoint pointId={selectedPointId} open={isEditOpen} setOpen={setIsEditOpen} userId={userId} userRole={userRole} />
-      <DeletePoint pointId={deletePointId} open={isDeleteOpen} setOpen={setIsDeleteOpen} userId={userId} userRole={userRole} />
+      <EditPoint
+        pointId={selectedPointId}
+        open={isEditOpen}
+        setOpen={setIsEditOpen}
+        userId={userId}
+        userRole={userRole} />
+
+      <DeletePoint
+        pointId={deletePointId}
+        open={isDeleteOpen}
+        setOpen={setIsDeleteOpen}
+        userId={userId}
+        userRole={userRole} />
+
     </div>
   );
 }

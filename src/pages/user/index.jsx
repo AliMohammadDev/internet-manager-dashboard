@@ -26,10 +26,16 @@ function User() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const { data, isLoading, isError } = useGetUsers(page, 5);
-  const users = data?.items || [];
-  const meta = data?.meta || { total_pages: 0, current_page: 1, total: 0 };
+  const { data: response, isLoading, isError } = useGetUsers(page, 5);
 
+  const users = response?.data?.items || [];
+  const meta = response?.data?.meta || { total_pages: 0, current_page: 1, total: 0 };
+
+  const stats = {
+    total: response?.totalUsers || 0,
+    active: response?.activeUsers || 0,
+    inactive: response?.inactiveUsers || 0
+  };
 
 
   // update user
@@ -80,38 +86,37 @@ function User() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white border border-stone-200 rounded-xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-cairo">
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4 transition-all hover:border-blue-200">
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
             <Users size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500">إجمالي المشتركين</p>
-            <p className="text-2xl font-bold">1,250</p>
+            <p className="text-sm text-stone-500 font-bold">إجمالي المشتركين</p>
+            <p className="text-2xl font-black text-stone-900">{stats.total.toLocaleString()}</p>
           </div>
         </div>
 
-        <div className="p-4 bg-white border border-stone-200 rounded-xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center">
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4 transition-all hover:border-green-200">
+          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
             <ShieldCheck size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500">اشتراكات نشطة</p>
-            <p className="text-2xl font-bold">980</p>
+            <p className="text-sm text-stone-500 font-bold">اشتراكات نشطة</p>
+            <p className="text-2xl font-black text-green-600">{stats.active.toLocaleString()}</p>
           </div>
         </div>
 
-        <div className="p-4 bg-white border border-stone-200 rounded-xl shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center">
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4 transition-all hover:border-orange-200">
+          <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center">
             <UserX size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500">اشتراكات منتهية</p>
-            <p className="text-2xl font-bold">270</p>
+            <p className="text-sm text-stone-500 font-bold">حسابات معطلة</p>
+            <p className="text-2xl font-black text-orange-600">{stats.inactive.toLocaleString()}</p>
           </div>
         </div>
       </div>
-
       <div className="flex flex-col md:flex-row gap-4">
         {/* search */}
         <div className="relative flex-1">

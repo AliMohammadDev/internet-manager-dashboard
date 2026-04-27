@@ -37,7 +37,7 @@ function EditUser({ userId, open, setOpen }) {
         description: user.description || '',
         active: user.active,
         role: user.role,
-        password: user.password || '',
+        password: '',
       });
     }
   }, [user, reset]);
@@ -49,7 +49,13 @@ function EditUser({ userId, open, setOpen }) {
   });
 
   const onSubmit = (values) => {
-    editMutation.mutate({ ...values, id: userId });
+    const payload = { ...values, id: userId };
+
+    if (!payload.password || payload.password.trim() === "") {
+      delete payload.password;
+    }
+
+    editMutation.mutate(payload);
   };
 
   return (
@@ -102,6 +108,7 @@ function EditUser({ userId, open, setOpen }) {
                     <Lock size={14} /> كلمة مرور جديدة (اختياري)
                   </Label>
                   <Input type="text" {...register("password")} placeholder="اتركه فارغاً للحفاظ على الحالية" className="text-right border-stone-200 rounded-xl h-11" />
+                  {errors.password && <span className="text-xs text-red-500">{errors.password.message}</span>}
                 </div>
               </div>
 

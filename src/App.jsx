@@ -209,6 +209,7 @@ function App() {
           </SidebarFooter>
         </Sidebar>
 
+        {/* logout */}
         <div className="flex-1 flex flex-col h-full overflow-hidden">
           <header className="h-16 bg-white border-b border-stone-200 flex items-center justify-between px-6 shrink-0">
             <SidebarTrigger />

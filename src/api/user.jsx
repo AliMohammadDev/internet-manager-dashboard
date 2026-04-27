@@ -33,6 +33,17 @@ export const useGetUser = (id) => {
   });
 };
 
+export const useGetUserProfile = (id) => {
+  return useQuery({
+    queryKey: ["profile", id],
+    queryFn: async () => {
+      const res = await axios.get(`user/my-profile/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+};
+
 export const useAddUser = (onSuccessCallback) => {
   const queryClient = useQueryClient();
 
