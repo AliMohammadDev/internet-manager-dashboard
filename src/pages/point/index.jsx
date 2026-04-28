@@ -54,8 +54,8 @@ function Points() {
   const networks = networksData?.items || [];
 
   const { data: response, isLoading, isError } = useGetPoints(page, 10, userId, userRole);
-  const points = response?.data?.items || [];
-  const meta = response?.data?.meta || { total_pages: 0, current_page: 1, total: 0 };
+  const points = response?.items || [];
+  const meta = response?.meta || { total_pages: 0, current_page: 1, total: 0 };
 
   const stats = {
     total: response?.totalPoints || 0,
@@ -83,6 +83,8 @@ function Points() {
 
     return matchesSearch && matchesStatus;
   });
+
+
   return (
     <div className="space-y-6">
       {/* Header */}
