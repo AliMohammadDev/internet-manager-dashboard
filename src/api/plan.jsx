@@ -18,11 +18,10 @@ export const useGetPlans = (page = 1, limit = 10, userId, userRole) => {
       };
       if (userRole !== "admin") {
         payload.user_id = {
-          id: Number(userId)
+          value: Number(userId)
         };
       }
-
-      const res = await axios.post("/isp-system/plan/get-all", payload);
+      const res = await axios.post("/plan/get-all", payload);
       return res.data;
     },
   });
@@ -32,7 +31,7 @@ export const useGetPlan = (id) => {
   return useQuery({
     queryKey: ["plan", id],
     queryFn: async () => {
-      const res = await axios.get(`/isp-system/plan/get-one/${id}`);
+      const res = await axios.get(`/plan/get-one/${id}`);
       return res.data;
     },
     enabled: !!id,
@@ -45,7 +44,7 @@ export const useAddPlan = (onSuccessCallback) => {
   return useMutation({
     mutationFn: async (planData) => {
       try {
-        const res = await axios.post("/isp-system/plan/create", planData);
+        const res = await axios.post("/plan/create", planData);
         return res.data;
       } catch (error) {
         const message = error.response?.data?.message || "حدث خطأ أثناء إضافة الخطة";
@@ -71,7 +70,7 @@ export const useEditPlan = (onSuccessCallback) => {
     mutationFn: async (planData) => {
       const { id, ...data } = planData;
       try {
-        const res = await axios.patch(`/isp-system/plan/update/${id}`, data);
+        const res = await axios.patch(`/plan/update/${id}`, data);
         return res.data;
       } catch (error) {
         const message = error.response?.data?.message || "فشل تحديث بيانات الخطة";
@@ -95,7 +94,7 @@ export const useDeletePlan = () => {
 
   return useMutation({
     mutationFn: async (planId) => {
-      await axios.delete(`/isp-system/plan/remove/${planId}`);
+      await axios.delete(`/plan/remove/${planId}`);
       return planId;
     },
     onSuccess: () => {

@@ -60,7 +60,7 @@ function CreatePoint({ setOpen, open, userId, userRole }) {
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-150 font-cairo p-8 rounded-[32px] max-h-[95vh] overflow-y-auto" dir="rtl">
+      <DialogContent className="sm:max-w-150 font-cairo p-11 rounded-[32px] max-h-[95vh] overflow-y-auto" dir="rtl">
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="text-right mb-6">
