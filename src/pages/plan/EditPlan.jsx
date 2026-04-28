@@ -20,6 +20,7 @@ function EditPlan({ planId, open, setOpen, userId, userRole }) {
   const { data: planResponse, isLoading: isFetchingPlan } = useGetPlan(planId);
   const plan = planResponse;
 
+
   const { data: networksData, isLoading: isLoadingNetworks } = useGetNetworks(1, 50, userId, userRole);
   const networks = networksData?.items || [];
 

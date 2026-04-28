@@ -51,6 +51,8 @@ function Plan() {
     }
   }
 
+
+
   const { data: networksData } = useGetNetworks(1, 100, userId, userRole);
   const networks = networksData?.items || [];
 
@@ -285,14 +287,14 @@ function Plan() {
 
 
       <EditPlan
-        pointId={selectedPlanId}
+        planId={selectedPlanId}
         open={isEditOpen}
         setOpen={setIsEditOpen}
         userId={userId}
         userRole={userRole} />
 
       <DeletePlan
-        pointId={deletePlanId}
+        planId={deletePlanId}
         open={isDeleteOpen}
         setOpen={setIsDeleteOpen}
         userId={userId}
