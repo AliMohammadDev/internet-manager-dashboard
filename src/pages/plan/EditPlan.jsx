@@ -89,7 +89,7 @@ function EditPlan({ planId, open, setOpen, userId, userRole }) {
                     {...register("name")}
                     className={`rounded-2xl h-12 ${errors.name ? 'border-red-500' : 'border-stone-200'}`}
                   />
-                  {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
+                  {errors.name && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.name.message}</span>}
                 </div>
 
                 <div className="grid gap-2 text-right">
@@ -114,7 +114,7 @@ function EditPlan({ planId, open, setOpen, userId, userRole }) {
                 </div>
               </div>
 
-              {/* السرعة والسعر */}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="grid gap-2 text-right">
                   <Label className="font-bold text-stone-700 mr-1 flex items-center gap-2">
@@ -141,7 +141,7 @@ function EditPlan({ planId, open, setOpen, userId, userRole }) {
                 </div>
               </div>
 
-              {/* الحالة */}
+
               <div className="flex items-center justify-between border border-stone-100 rounded-2xl h-14 px-5 bg-stone-50/50 mt-2 transition-all hover:bg-stone-50">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activeValue ? 'bg-green-100 text-green-600' : 'bg-stone-200 text-stone-500'}`}>

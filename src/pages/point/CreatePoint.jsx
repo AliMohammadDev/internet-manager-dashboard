@@ -88,7 +88,7 @@ function CreatePoint({ setOpen, open, userId, userRole }) {
                   className={`pr-10 rounded-2xl h-12 ${errors.location ? 'border-red-500' : 'border-stone-200'}`}
                 />
               </div>
-              {errors.location && <span className="text-xs text-red-500">{errors.location.message}</span>}
+              {errors.location && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.location.message}</span>}
             </div>
 
             <div className="grid grid-cols-3 gap-4">
@@ -112,7 +112,7 @@ function CreatePoint({ setOpen, open, userId, userRole }) {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.network_id && <span className="text-xs text-red-500">{errors.network_id.message}</span>}
+                {errors.network_id && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.network_id.message}</span>}
               </div>
 
               <div className="grid gap-2 text-right">

@@ -71,7 +71,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
             <div className="grid gap-2 text-right">
               <Label className="font-bold text-stone-700">اسم الزبون الكامل *</Label>
               <Input {...register("name")} placeholder="اسم الزبون" className="rounded-2xl h-12" />
-              {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
+              {errors.name && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.name.message}</span>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -81,7 +81,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                   <Phone size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400" />
                   <Input {...register("phone")} placeholder="05xxxxxxxx" className="pr-10 rounded-2xl h-12" />
                 </div>
-                {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
+                {errors.phone && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.phone.message}</span>}
               </div>
 
               <div className="grid gap-2 text-right">
@@ -92,7 +92,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                     {networksData?.items?.map(net => <SelectItem key={net.id} value={net.id.toString()}>{net.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                {errors.network_id && <span className="text-xs text-red-500">{errors.network_id.message}</span>}              </div>
+                {errors.network_id && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.network_id.message}</span>}              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -104,7 +104,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                     {pointsData?.items?.map(p => <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                {errors.point_id && <span className="text-xs text-red-500">{errors.point_id.message}</span>}              </div>
+                {errors.point_id && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.point_id.message}</span>}              </div>
 
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700"> الخطه المختارة *</Label>
@@ -114,7 +114,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                     {planData?.items?.map(p => <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                {errors.plan_id && <span className="text-xs text-red-500">{errors.plan_id.message}</span>}              </div>
+                {errors.plan_id && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.plan_id.message}</span>}              </div>
 
             </div>
 

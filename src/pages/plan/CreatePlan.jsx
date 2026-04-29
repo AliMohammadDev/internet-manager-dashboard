@@ -90,7 +90,7 @@ function CreatePlan({ setOpen, open, userId, userRole }) {
                   placeholder="مثال: الباقة الفضية"
                   className={`rounded-2xl h-12 ${errors.name ? 'border-red-500' : 'border-stone-200'}`}
                 />
-                {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
+                {errors.name && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.name.message}</span>}
               </div>
 
               <div className="grid gap-2 text-right">
@@ -112,7 +112,7 @@ function CreatePlan({ setOpen, open, userId, userRole }) {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.network_id && <span className="text-xs text-red-500">{errors.network_id.message}</span>}
+                {errors.network_id && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.network_id.message}</span>}
               </div>
             </div>
 

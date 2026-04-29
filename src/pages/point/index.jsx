@@ -32,7 +32,6 @@ function Points() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const cookies = Cookie();

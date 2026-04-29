@@ -72,7 +72,7 @@ function EditNetwork({ networkId, open, setOpen }) {
                   {...register("name", { required: "اسم الشبكة مطلوب" })}
                   className={`rounded-2xl h-12 text-right text-base border-stone-200 focus:ring-amber-500 ${errors.name ? 'border-red-500' : ''}`}
                 />
-                {errors.name && <span className="text-xs text-red-500 mr-1">{errors.name.message}</span>}
+                {errors.name && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.name.message}</span>}
               </div>
 
               <div className="grid gap-2 text-right">
@@ -83,7 +83,7 @@ function EditNetwork({ networkId, open, setOpen }) {
                   {...register("location", { required: "الموقع مطلوب" })}
                   className={`rounded-2xl h-12 text-right text-base border-stone-200 focus:ring-amber-500 ${errors.location ? 'border-red-500' : ''}`}
                 />
-                {errors.location && <span className="text-xs text-red-500 mr-1">{errors.location.message}</span>}
+                {errors.location && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.location.message}</span>}
               </div>
 
               <div className="flex items-center justify-between border border-stone-100 rounded-2xl h-14 px-5 bg-stone-50/50 mt-2 transition-all hover:bg-stone-50">

@@ -74,7 +74,7 @@ function EditCustomer({ customerId, open, setOpen, userId, userRole }) {
                     className={`pr-10 rounded-2xl h-12 border-stone-200 focus:ring-amber-500`}
                   />
                 </div>
-                {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
+                {errors.name && <span className="text-[13px] font-bold text-red-500 mr-1">⚠️{errors.name.message}</span>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -88,8 +88,6 @@ function EditCustomer({ customerId, open, setOpen, userId, userRole }) {
                   />
                 </div>
               </div>
-
-
 
               <div className="flex items-center justify-between border border-stone-100 rounded-2xl h-14 px-5 bg-stone-50/50 mt-2 transition-all hover:bg-stone-50">
                 <div className="flex items-center gap-3">
