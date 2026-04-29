@@ -39,7 +39,13 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
   const { data: planData } = useGetPlans(1, 100, userId, userRole);
 
   const onSubmit = (values) => {
-    addMutation.mutate({ ...values, user_id: userId });
+    addMutation.mutate({
+      ...values,
+      user_id: userId,
+      plan_id: Number(values.plan_id),
+      point_id: Number(values.point_id),
+      network_id: Number(values.network_id),
+    });
   };
 
   return (
@@ -86,7 +92,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                     {networksData?.items?.map(net => <SelectItem key={net.id} value={net.id.toString()}>{net.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
-              </div>
+                {errors.network_id && <span className="text-xs text-red-500">{errors.network_id.message}</span>}              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -98,7 +104,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                     {pointsData?.items?.map(p => <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
-              </div>
+                {errors.point_id && <span className="text-xs text-red-500">{errors.point_id.message}</span>}              </div>
 
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700"> الخطه المختارة *</Label>
@@ -108,7 +114,7 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
                     {planData?.items?.map(p => <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
-              </div>
+                {errors.plan_id && <span className="text-xs text-red-500">{errors.plan_id.message}</span>}              </div>
 
             </div>
 

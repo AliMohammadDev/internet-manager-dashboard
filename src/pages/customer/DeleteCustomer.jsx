@@ -9,13 +9,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Loader2, Trash2, AlertTriangle, X } from "lucide-react"
-import { useDeletePoint } from '@/api/point';
+import { useDeleteCustomer } from '@/api/customer';
 
-function DeletePoint({ pointId, open, setOpen }) {
-  const deleteMutation = useDeletePoint();
+function DeletePoint({ customerId, open, setOpen }) {
+  const deleteMutation = useDeleteCustomer();
 
   const onConfirmDelete = () => {
-    deleteMutation.mutate(pointId, {
+    deleteMutation.mutate(customerId, {
       onSuccess: () => {
         setOpen(false);
       }
