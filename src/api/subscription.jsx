@@ -28,6 +28,17 @@ export const useGetSubscriptions = (page = 1, limit = 10, userId, userRole) => {
   });
 };
 
+export const useGetSubscription = (id) => {
+  return useQuery({
+    queryKey: ["subscription", id],
+    queryFn: async () => {
+      const res = await axios.get(`/subscription/get-one/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+};
+
 export const useAddSubscription = (onSuccessCallback) => {
   const queryClient = useQueryClient();
   return useMutation({

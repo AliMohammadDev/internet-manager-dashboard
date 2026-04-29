@@ -77,7 +77,6 @@ function EditPoint({ pointId, open, setOpen, userId, userRole }) {
         ) : (
           <form onSubmit={handleSubmit(onSubmit)}>
 
-
             <div className="space-y-5 py-2">
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700 mr-1">الموقع الجغرافي *</Label>
