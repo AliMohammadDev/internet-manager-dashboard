@@ -160,6 +160,7 @@ function Subscription() {
               <Table>
                 <TableHeader className="bg-stone-50/50 text-right">
                   <TableRow>
+                    <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                     <TableHead className="text-right p-5">المشترك</TableHead>
                     <TableHead className="text-right p-5">الباقة</TableHead>
                     <TableHead className="text-right p-5">السعر</TableHead>
@@ -170,8 +171,13 @@ function Subscription() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredSubscriptions.map((sub) => (
+                  {filteredSubscriptions.map((sub, index) => (
                     <TableRow key={sub.id} className="group hover:bg-stone-50/40 transition-colors">
+
+                      <TableCell className="p-4 text-center font-medium text-stone-900 w-10">
+                        {index + 1}
+                      </TableCell>
+
                       <TableCell className="p-5">
                         <div className="flex items-center gap-2 font-bold text-stone-900">
                           <div className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 group-hover:bg-black group-hover:text-white transition-all">

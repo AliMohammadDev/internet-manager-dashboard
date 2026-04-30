@@ -148,6 +148,7 @@ function Customers() {
               <Table>
                 <TableHeader className="bg-stone-50/50">
                   <TableRow>
+                    <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                     <TableHead className="text-right font-bold p-5">معلومات الزبون</TableHead>
                     <TableHead className="text-right font-bold p-5">رقم التواصل</TableHead>
                     <TableHead className="text-right font-bold p-5">الشبكة والارتباط</TableHead>
@@ -158,11 +159,16 @@ function Customers() {
                 </TableHeader>
 
                 <TableBody>
-                  {filteredCustomers.map((customer) => {
+                  {filteredCustomers.map((customer, index) => {
                     const networkName = networks.find(n => String(n.id) === String(customer.network_id))?.name || "غير محدد";
 
                     return (
                       <TableRow key={customer.id} className="hover:bg-stone-50/40 border-b border-stone-100 transition-colors group">
+                        <TableCell className="p-4 text-center font-medium text-stone-900 w-10">
+                          {index + 1}
+                        </TableCell>
+
+
                         <TableCell className="p-5">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white transition-all shadow-sm border border-transparent group-hover:border-stone-100">

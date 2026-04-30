@@ -171,6 +171,7 @@ function User() {
               <Table>
                 <TableHeader className="bg-stone-50/50">
                   <TableRow>
+                    <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                     <TableHead className="text-right font-bold text-stone-800 p-4">المشترك</TableHead>
                     <TableHead className="text-right font-bold text-stone-800 p-4">التواصل</TableHead>
                     <TableHead className="text-right font-bold text-stone-800 p-4">الدور</TableHead>
@@ -182,8 +183,13 @@ function User() {
                 {/* data */}
 
                 <TableBody>
-                  {filteredUsers.map((user) => (
+                  {filteredUsers.map((user, index) => (
                     <TableRow key={user.id} className="hover:bg-stone-50/40 transition-colors border-b border-stone-100">
+
+                      <TableCell className="p-4 text-center font-medium text-stone-900 w-10">
+                        {index + 1}
+                      </TableCell>
+
                       <TableCell className="p-4">
                         <div className="flex flex-col text-right">
                           <span className="text-stone-900 font-bold">{user.name}</span>
@@ -244,6 +250,7 @@ function User() {
                   ))}
                 </TableBody>
               </Table>
+
             </div>
 
             {/* pagination */}

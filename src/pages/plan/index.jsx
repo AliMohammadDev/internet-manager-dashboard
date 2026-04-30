@@ -168,6 +168,7 @@ function Plan() {
             <Table>
               <TableHeader className="bg-stone-50/50">
                 <TableRow>
+                  <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">اسم الباقة</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">السرعة (Mbps)</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">السعر</TableHead>
@@ -177,13 +178,19 @@ function Plan() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredPlans.map((plan) => {
+                {filteredPlans.map((plan, index) => {
                   const networkName = networks.find(
                     (net) => String(net.id) === String(plan.network_id)
                   )?.name || "غير محدد";
 
                   return (
                     <TableRow key={plan.id} className="group hover:bg-stone-50/40 transition-colors border-b border-stone-100">
+
+                      <TableCell className="p-4 text-center font-medium text-stone-900 w-10">
+                        {index + 1}
+                      </TableCell>
+
+
                       <TableCell className="p-5 text-right font-bold text-stone-900">
                         {plan.name}
                       </TableCell>

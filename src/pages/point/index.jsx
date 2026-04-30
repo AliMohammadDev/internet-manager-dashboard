@@ -174,6 +174,7 @@ function Points() {
             <Table>
               <TableHeader className="bg-stone-50/50">
                 <TableRow>
+                  <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">معلومات النقطة</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">الموقع</TableHead>
                   <TableHead className="text-right font-bold text-stone-800 p-5">الاستهلاك / السعة</TableHead>
@@ -184,13 +185,17 @@ function Points() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredPoints.map((point) => {
+                {filteredPoints.map((point, index) => {
 
                   const networkName = networks.find(
                     (net) => String(net.id) === String(point.network_id)
                   )?.name || "غير محدد";
                   return (
                     <TableRow key={point.id} className="group hover:bg-stone-50/40 transition-colors border-b border-stone-100">
+
+                      <TableCell className="p-4 text-center font-medium text-stone-900 w-10">
+                        {index + 1}
+                      </TableCell>
 
                       <TableCell className="p-5">
                         <div className="flex items-center gap-3">
