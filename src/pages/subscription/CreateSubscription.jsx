@@ -57,7 +57,7 @@ function CreateSubscription({ open, setOpen, userId, userRole }) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="text-right mb-8">
             <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3">
-              <div className="bg-stone-100 p-2.5 rounded-2xl text-stone-700">
+              <div className="bg-stone-100 p-2.5 rounded-2xl text-blue-600">
                 <Ticket size={24} />
               </div>
               <span style={{ fontFamily: "cairo" }}>تفعيل اشتراك جديد</span>

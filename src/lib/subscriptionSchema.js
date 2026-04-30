@@ -17,6 +17,8 @@ export const subscriptionSchema = z.object({
   }).min(1, "يرجى اختيار نقطة التوزيع"),
 
   end_date: z.string().min(1, "تاريخ الانتهاء مطلوب"),
+
   active: z.boolean().default(true),
+  
   status: z.boolean().default(true),
 });

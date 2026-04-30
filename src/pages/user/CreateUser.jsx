@@ -58,7 +58,7 @@ function CreateUser() {
           <DialogHeader className="text-right mb-4">
             <DialogTitle className="text-2xl font-bold text-stone-900 flex items-center gap-2 font-cairo">
               <div className="bg-stone-100 p-2 rounded-lg">
-                <UserPlus size={24} className="text-stone-700" />
+                <UserPlus size={24} className="text-blue-600" />
               </div>
               إضافة مشترك جديد
             </DialogTitle>

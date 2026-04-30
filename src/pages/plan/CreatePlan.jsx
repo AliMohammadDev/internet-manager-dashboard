@@ -68,7 +68,7 @@ function CreatePlan({ setOpen, open, userId, userRole }) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="text-right mb-6">
             <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3">
-              <div className="bg-stone-100 p-2.5 rounded-2xl text-stone-700">
+              <div className="bg-stone-100 p-2.5 rounded-2xl text-blue-600">
                 <LayoutGrid size={24} />
               </div>
               <span style={{ fontFamily: "cairo" }}>تعريف باقة إنترنت</span>
