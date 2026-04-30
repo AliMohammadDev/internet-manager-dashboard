@@ -199,7 +199,7 @@ function Points() {
 
                       <TableCell className="p-5">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-stone-100">
+                          <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-black group-hover:text-white transition-all">
                             <NetworkIcon size={18} />
                           </div>
                           <div className="flex flex-col text-right">

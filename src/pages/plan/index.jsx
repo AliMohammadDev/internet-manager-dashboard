@@ -190,7 +190,6 @@ function Plan() {
                         {index + 1}
                       </TableCell>
 
-
                       <TableCell className="p-5 text-right font-bold text-stone-900">
                         {plan.name}
                       </TableCell>
