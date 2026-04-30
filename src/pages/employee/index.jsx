@@ -17,7 +17,6 @@ import Cookie from "cookie-universal";
 import { jwtDecode } from "jwt-decode";
 import { useGetEmployees, useDeleteEmployee } from "@/api/employee";
 import CreateEmployee from "./CreateEmployee";
-// import EditEmployee from "./EditEmployee"; // تأكد من إنشائها لاحقاً
 import {
   Pagination,
   PaginationContent,
@@ -26,6 +25,8 @@ import {
   PaginationNext,
   PaginationPrevious
 } from "@/components/ui/pagination";
+import EditEmployee from "./EditEmployee";
+import DeleteEmployee from "./DeleteEmployee";
 
 function Employees() {
   const [page, setPage] = useState(1);
@@ -34,6 +35,8 @@ function Employees() {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [selectedEmployeeName, setSelectedEmployeeName] = useState("");
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -151,7 +154,7 @@ function Employees() {
                   <TableRow>
                     <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                     <TableHead className="text-right font-bold p-5">الموظف</TableHead>
-                    <TableHead className="text-right font-bold p-5">الارتباط بالنظام</TableHead>
+                    <TableHead className="text-right font-bold p-5">الايميل</TableHead>
                     <TableHead className="text-right font-bold p-5">الحالة</TableHead>
                     <TableHead className="text-left font-bold p-5">إجراءات</TableHead>
                   </TableRow>
@@ -166,24 +169,24 @@ function Employees() {
 
                       <TableCell className="p-5">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white transition-all shadow-sm border border-transparent group-hover:border-stone-100">
+                          <div className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 group-hover:bg-black group-hover:text-white transition-all">
                             <Users size={18} />
                           </div>
                           <div className="flex flex-col text-right">
                             <span className="font-bold text-stone-900">{emp.full_name}</span>
-                            <span className="text-[11px] text-stone-400 flex items-center gap-1">
-                              <Mail size={10} /> {emp.email}
-                            </span>
+
                           </div>
                         </div>
                       </TableCell>
 
+
                       <TableCell className="p-5 text-right font-medium">
-                        <div className="flex items-center gap-2 text-stone-600 bg-stone-50 w-fit px-3 py-1 rounded-lg border border-stone-100">
-                          <Briefcase size={14} className="text-stone-400" />
-                          <span className="text-sm italic text-stone-500">ID: {emp.user_id}</span>
+                        <div className="flex items-center gap-2 text-stone-900 bg-stone-50 w-fit px-3 py-1.5 rounded-lg border border-stone-100 group-hover:bg-white transition-colors">
+                          <Mail size={14} className="text-stone-900" />
+                          <span className="text-sm font-semibold tracking-wide lowercase">{emp.email}</span>
                         </div>
                       </TableCell>
+
 
                       <TableCell className="p-5 text-right">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black ${emp.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
@@ -202,12 +205,12 @@ function Employees() {
                               onClick={() => { setSelectedEmployeeId(emp.id); setIsEditOpen(true); }}
                               className="flex items-center justify-end gap-2 cursor-pointer"
                             >
-                              <span>تعديل الصلاحيات</span>
+                              <span>تعديل البيانات</span>
                               <Edit size={16} className="text-blue-500" />
                             </DropdownMenuItem>
                             <div className="h-px bg-stone-100 my-1" />
                             <DropdownMenuItem
-                              onClick={() => { if (window.confirm('هل أنت متأكد من حذف الموظف؟')) deleteMutation.mutate(emp.id) }}
+                              onClick={() => { setSelectedEmployeeId(emp.id); setSelectedEmployeeName(emp.name); setIsDeleteOpen(true); }}
                               className="text-red-600 flex items-center justify-end gap-2 cursor-pointer"
                             >
                               <span>حذف الموظف</span>
@@ -267,7 +270,27 @@ function Employees() {
         )}
       </div>
 
-      <CreateEmployee open={isAddOpen} setOpen={setIsAddOpen} userId={userId} />
+      <CreateEmployee
+        open={isAddOpen}
+        setOpen={setIsAddOpen}
+        userId={userId}
+        userRole={userRole}
+      />
+
+      <EditEmployee
+        employeeId={selectedEmployeeId}
+        open={isEditOpen}
+        setOpen={setIsEditOpen}
+        userId={userId}
+        userRole={userRole}
+      />
+
+      <DeleteEmployee
+        employeeId={selectedEmployeeId}
+        employeeName={setSelectedEmployeeName}
+        open={isDeleteOpen}
+        setOpen={setIsDeleteOpen}
+      />
     </div>
   );
 }

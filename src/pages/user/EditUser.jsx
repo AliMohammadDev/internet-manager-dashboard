@@ -54,7 +54,6 @@ function EditUser({ userId, open, setOpen }) {
     if (!payload.password || payload.password.trim() === "") {
       delete payload.password;
     }
-
     editMutation.mutate(payload);
   };
 

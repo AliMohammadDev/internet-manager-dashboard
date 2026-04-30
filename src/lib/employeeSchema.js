@@ -23,8 +23,29 @@ export const employeeSchema = z.object({
     .boolean()
     .default(true),
 
-  refresh_token: z
+
+});
+
+
+export const editEmployeeSchema = z.object({
+  full_name: z
     .string()
-    .optional()
-    .nullable(),
+    .min(3, { message: "الاسم يجب أن يكون 3 أحرف على الأقل" })
+    .max(50, { message: "الاسم طويل جداً" }),
+
+  email: z
+    .string()
+    .email({ message: "البريد الإلكتروني غير صحيح" }),
+
+  password: z
+    .string()
+    .optional(),
+
+  user_id: z
+    .preprocess((val) => Number(val), z.number().min(1, { message: "يجب اختيار مستخدم مرتبط" })),
+
+  active: z
+    .boolean()
+    .default(true),
+
 });

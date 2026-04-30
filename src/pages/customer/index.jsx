@@ -82,7 +82,6 @@ function Customers() {
           <h1 className="text-3xl font-bold text-stone-900">قائمة الزبائن</h1>
           <p className="text-stone-500 mt-1">إدارة بيانات المشتركين وتفاصيل التواصل الخاصة بهم.</p>
         </div>
-        <CreateCustomer open={isAddOpen} setOpen={setIsAddOpen} userId={userId} userRole={userRole} />
       </div>
 
       {/* Stats Cards */}
@@ -171,7 +170,7 @@ function Customers() {
 
                         <TableCell className="p-5">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-stone-100 rounded-xl flex items-center justify-center text-stone-500 group-hover:bg-white transition-all shadow-sm border border-transparent group-hover:border-stone-100">
+                            <div className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 group-hover:bg-black group-hover:text-white transition-all">
                               <UserIcon size={18} />
                             </div>
                             <div className="flex flex-col">
@@ -295,6 +294,14 @@ function Customers() {
           </div>
         )}
       </div>
+
+
+      <CreateCustomer
+        open={isAddOpen}
+        setOpen={setIsAddOpen}
+        userId={userId}
+        userRole={userRole}
+      />
 
       <EditCustomer
         customerId={selectedCustomerId}

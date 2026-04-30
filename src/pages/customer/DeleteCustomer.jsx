@@ -11,7 +11,7 @@ import {
 import { Loader2, Trash2, AlertTriangle, X } from "lucide-react"
 import { useDeleteCustomer } from '@/api/customer';
 
-function DeletePoint({ customerId, open, setOpen }) {
+function DeleteCustomer({ customerId, open, setOpen }) {
   const deleteMutation = useDeleteCustomer();
 
   const onConfirmDelete = () => {
@@ -66,4 +66,4 @@ function DeletePoint({ customerId, open, setOpen }) {
   )
 }
 
-export default DeletePoint;
+export default DeleteCustomer;

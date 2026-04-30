@@ -11,7 +11,7 @@ import { Save, UserPlus, Mail, Lock, Loader2, Info, Fingerprint } from "lucide-r
 import { useAddEmployee } from "@/api/employee";
 import { employeeSchema } from "@/lib/employeeSchema";
 
-function CreateEmployee({ setOpen, open, userId }) {
+function CreateEmployee({ setOpen, open, userId, userRole }) {
   const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
     resolver: zodResolver(employeeSchema),
     defaultValues: {
@@ -19,7 +19,7 @@ function CreateEmployee({ setOpen, open, userId }) {
       full_name: "",
       email: "",
       password: "",
-      user_id: userId || "", // استخدام الـ ID الحالي كقيمة افتراضية أو اختيارها
+      user_id: userId || "",
     }
   });
 
