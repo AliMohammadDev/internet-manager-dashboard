@@ -100,7 +100,7 @@ function Permissions() {
                           <div className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 group-hover:bg-black group-hover:text-white transition-all">
                             <Key size={18} />
                           </div>
-                          <span className="font-bold text-stone-900 uppercase font-mono tracking-tight">{perm.name}</span>
+                          <span className="font-bold text-stone-900">{perm.name}</span>
                         </div>
                       </TableCell>
 
