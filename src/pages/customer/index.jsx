@@ -29,6 +29,7 @@ import {
   PaginationPrevious
 } from "@/components/ui/pagination";
 import { ShieldCheck } from "lucide-react";
+import { Plus } from "lucide-react";
 
 function Customers() {
   const [page, setPage] = useState(1);
@@ -41,7 +42,6 @@ function Customers() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // داخل مكون Customers
   const { data: stats, isLoading: isLoadingStats } = useGetCustomerStatistics();
 
   const cookies = Cookie();
@@ -86,6 +86,14 @@ function Customers() {
           <h1 className="text-3xl font-bold text-stone-900">قائمة الزبائن</h1>
           <p className="text-stone-500 mt-1">إدارة بيانات المشتركين وتفاصيل التواصل الخاصة بهم.</p>
         </div>
+
+        <button
+          onClick={() => setIsAddOpen(true)}
+          className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl hover:bg-stone-800 transition-all font-bold shadow-sm cursor-pointer"
+        >
+          <Plus size={20} />
+          <span>إنشاء زبون جديد</span>
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -326,13 +334,13 @@ function Customers() {
       </div>
 
 
+      {/* Modals */}
       <CreateCustomer
         open={isAddOpen}
         setOpen={setIsAddOpen}
         userId={userId}
         userRole={userRole}
       />
-
       <EditCustomer
         customerId={selectedCustomerId}
         open={isEditOpen}
@@ -340,7 +348,6 @@ function Customers() {
         userId={userId}
         userRole={userRole}
       />
-
       <DeleteCustomer
         customerId={selectedCustomerId}
         customerName={selectedCustomerName}

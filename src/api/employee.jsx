@@ -96,6 +96,7 @@ export const useEditEmployee = (onSuccessCallback) => {
       toast.success("تم تعديل بيانات الموظف بنجاح");
       if (onSuccessCallback) onSuccessCallback();
     },
+
     onError: (error) => {
       const errorMessage = Array.isArray(error.message) ? error.message[0] : error.message;
       toast.error(errorMessage);

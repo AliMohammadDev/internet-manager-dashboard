@@ -15,6 +15,7 @@ import { useGetPoints } from "@/api/point";
 import { customerSchema } from "@/lib/customerSchema";
 import { Info } from "lucide-react";
 import { useGetPlans } from "@/api/plan";
+import { Key } from "lucide-react";
 
 
 function CreateCustomer({ setOpen, open, userId, userRole }) {
@@ -50,18 +51,15 @@ function CreateCustomer({ setOpen, open, userId, userRole }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button className="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-2xl hover:bg-stone-800 transition-all font-bold font-cairo">
-          <UserPlus size={20} />
-          <span>إضافة زبون جديد</span>
-        </button>
-      </DialogTrigger>
-
       <DialogContent className="sm:max-w-150 font-cairo p-11 rounded-[32px] max-h-[95vh] overflow-y-auto" dir="rtl">
         <form onSubmit={handleSubmit(onSubmit)}>
+
           <DialogHeader className="text-right mb-6">
+
             <DialogTitle className="text-2xl font-black text-stone-900 flex items-center gap-3">
-              <div className="bg-stone-100 p-2.5 rounded-2xl text-stone-700"><UserPlus size={24} /></div>
+              <div className="bg-stone-100 p-2.5 rounded-2xl text-stone-700">
+                <UserPlus size={24} />
+              </div>
               <span style={{ fontFamily: 'cairo' }}>إضافة زبون جديد</span>
             </DialogTitle>
             <DialogDescription className="text-stone-500 font-bold">أدخل بيانات الزبون لربطه بالشبكة والنقطة المناسبة.</DialogDescription>

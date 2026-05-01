@@ -37,6 +37,7 @@ import EditSubscription from "./EditSubscription";
 import DeleteSubscription from "./DeleteSubscription";
 import Cookie from "cookie-universal";
 import { jwtDecode } from "jwt-decode";
+import { Button } from "@/components/ui/button";
 
 function Subscription() {
   const [page, setPage] = useState(1);
@@ -102,7 +103,6 @@ function Subscription() {
         </button>
       </div>
 
-      {/* Stats Cards */}
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -320,20 +320,14 @@ function Subscription() {
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-            <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center text-stone-300">
-              <Ticket size={40} />
-            </div>
-            <div className="max-w-sm">
-              <h3 className="text-xl font-bold text-stone-900 font-cairo">لا توجد نتائج</h3>
-              <p className="text-stone-500 mt-2 font-cairo">لم نعثر على أي اشتراكات تطابق معايير البحث الحالية.</p>
-            </div>
-            <button onClick={() => { setSearchTerm(""); setStatusFilter("all"); }} className="text-blue-600 font-bold text-sm cursor-pointer underline">
-              إعادة تعيين الفلاتر
-            </button>
+          <div className="flex flex-col items-center justify-center py-24 bg-stone-50 rounded-[40px] border-2 border-dashed border-stone-200 mx-4 my-4">
+            <Ticket size={48} className="text-stone-200 mb-2" />
+            <p className="text-stone-500 font-bold">لا يوجد اشتراكات مطابقة للبحث</p>
+            <Button variant="link" onClick={() => setIsAddOpen(true)} className="text-stone-600 underline">أضف اشتراك جديد</Button>
           </div>
         )}
       </div>
+
 
       {/* Modals */}
       <CreateSubscription open={isAddOpen} setOpen={setIsAddOpen} userId={userId} userRole={userRole} />
