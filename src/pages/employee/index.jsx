@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Cookie from "cookie-universal";
 import { jwtDecode } from "jwt-decode";
-import { useGetEmployees, useDeleteEmployee } from "@/api/employee";
+import { useGetEmployees, useGetEmployeeStatistics } from "@/api/employee";
 import CreateEmployee from "./CreateEmployee";
 import {
   Pagination,
@@ -40,6 +40,9 @@ function Employees() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const { data: stats, isLoading: isLoadingStats } = useGetEmployeeStatistics();
+
+
   const cookies = Cookie();
   const token = cookies.get("token");
   let userId = null;
@@ -54,7 +57,6 @@ function Employees() {
   }
 
   const { data: response, isLoading: isLoadingEmployees } = useGetEmployees(page, 10, userId, userRole);
-  const deleteMutation = useDeleteEmployee();
 
   const employees = response?.items || [];
   const meta = response?.meta || { total_pages: 0, current_page: 1, total: 0 };
@@ -89,27 +91,64 @@ function Employees() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
-            <Users size={24} />
-          </div>
-          <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">إجمالي الموظفين</p>
-            <p className="text-2xl font-black text-stone-900">{meta.total}</p>
+      {/* Stats Cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        {/* Card: Total Employees */}
+        <div className="p-6 bg-white border border-stone-200 rounded-[32px] shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+              <Users size={28} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-stone-500 mb-1">إجمالي الموظفين</p>
+              {isLoadingStats ? (
+                <Loader2 className="animate-spin text-stone-300 size-6" />
+              ) : (
+                <h3 className="text-3xl font-black text-stone-900 leading-none">
+                  {stats?.totalEmployees || 0}
+                </h3>
+              )}
+            </div>
           </div>
         </div>
-        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center">
-            <ShieldCheck size={24} />
-          </div>
-          <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">الموظفين النشطين</p>
-            <p className="text-2xl font-black text-purple-600">
-              {employees.filter(e => e.active).length}
-            </p>
+
+        <div className="p-6 bg-white border border-stone-200 rounded-[32px] shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
+              <ShieldCheck size={28} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-stone-500 mb-1">الموظفون النشطون</p>
+              {isLoadingStats ? (
+                <Loader2 className="animate-spin text-stone-300 size-6" />
+              ) : (
+                <h3 className="text-3xl font-black text-green-600 leading-none">
+                  {stats?.activeEmployees || 0}
+                </h3>
+              )}
+            </div>
           </div>
         </div>
+
+        <div className="p-6 bg-white border border-stone-200 rounded-[32px] shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center">
+              <Users size={28} className="opacity-60" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-stone-500 mb-1">غير نشط</p>
+              {isLoadingStats ? (
+                <Loader2 className="animate-spin text-stone-300 size-6" />
+              ) : (
+                <h3 className="text-3xl font-black text-red-600 leading-none">
+                  {stats?.inactiveEmployees || 0}
+                </h3>
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Filters */}

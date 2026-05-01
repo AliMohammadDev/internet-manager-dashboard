@@ -38,6 +38,17 @@ export const useGetEmployee = (id) => {
   });
 };
 
+export const useGetEmployeeStatistics = () => {
+  return useQuery({
+    queryKey: ["employee-statistics"],
+    queryFn: async () => {
+      const res = await axios.get(`/employee/employees-statistics`);
+      return res.data;
+    },
+  });
+};
+
+
 export const useAddEmployee = (onSuccessCallback) => {
   const queryClient = useQueryClient();
 
@@ -53,6 +64,8 @@ export const useAddEmployee = (onSuccessCallback) => {
     },
     onSuccess: (newEmployee) => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employee-statistics"] });
+
       toast.success("تمت إضافة الموظف بنجاح!");
       if (onSuccessCallback) onSuccessCallback(newEmployee);
     },
@@ -79,6 +92,7 @@ export const useEditEmployee = (onSuccessCallback) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employee-statistics"] });
       toast.success("تم تعديل بيانات الموظف بنجاح");
       if (onSuccessCallback) onSuccessCallback();
     },
@@ -99,6 +113,8 @@ export const useDeleteEmployee = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employee-statistics"] });
+
       toast.success("تم حذف الموظف بنجاح");
     },
     onError: () => {

@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { useGetSubscriptions } from "@/api/subscription";
+import { useGetSubscriptions, useGetSubscriptionStatistics } from "@/api/subscription";
 import CreateSubscription from "./CreateSubscription";
 import EditSubscription from "./EditSubscription";
 import DeleteSubscription from "./DeleteSubscription";
@@ -49,6 +49,7 @@ function Subscription() {
   const [deleteSubscriptionId, setDeleteSubscriptionId] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const { data: stats, isLoading: isLoadingStats } = useGetSubscriptionStatistics();
   const cookies = Cookie();
   const token = cookies.get("token");
   let userId = null;
@@ -102,19 +103,54 @@ function Subscription() {
       </div>
 
       {/* Stats Cards */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-5 bg-white border border-stone-200 rounded-2xl shadow-sm flex items-center gap-4 transition-all hover:border-emerald-200">
-          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><Activity size={24} /></div>
-          <div><p className="text-sm text-stone-500 font-bold">الاشتراكات الفعالة</p><p className="text-2xl font-black">{meta.total}</p></div>
-        </div>
-        <div className="p-5 bg-white border border-stone-200 rounded-2xl shadow-sm flex items-center gap-4 transition-all hover:border-amber-200">
-          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center"><CalendarClock size={24} /></div>
-          <div><p className="text-sm text-stone-500 font-bold">تنتهي اليوم</p><p className="text-2xl font-black">--</p></div>
-        </div>
+
+        {/* إجمالي الاشتراكات */}
         <div className="p-5 bg-white border border-stone-200 rounded-2xl shadow-sm flex items-center gap-4 transition-all hover:border-blue-200">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><CreditCard size={24} /></div>
-          <div><p className="text-sm text-stone-500 font-bold">تحصيلات النظام</p><p className="text-2xl font-black">قيد الحساب</p></div>
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+            <Ticket size={24} />
+          </div>
+          <div>
+            <p className="text-sm text-stone-500 font-bold">إجمالي الاشتراكات</p>
+            {isLoadingStats ? (
+              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
+            ) : (
+              <p className="text-2xl font-black text-stone-900">{stats?.totalSubscriptions || 0}</p>
+            )}
+          </div>
         </div>
+
+        {/* الاشتراكات النشطة */}
+        <div className="p-5 bg-white border border-stone-200 rounded-2xl shadow-sm flex items-center gap-4 transition-all hover:border-emerald-200">
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+            <Activity size={24} />
+          </div>
+          <div>
+            <p className="text-sm text-stone-500 font-bold">الاشتراكات النشطة</p>
+            {isLoadingStats ? (
+              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
+            ) : (
+              <p className="text-2xl font-black text-emerald-600">{stats?.activeSubscriptions || 0}</p>
+            )}
+          </div>
+        </div>
+
+        {/* الاشتراكات غير النشطة */}
+        <div className="p-5 bg-white border border-stone-200 rounded-2xl shadow-sm flex items-center gap-4 transition-all hover:border-red-200">
+          <div className="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
+            <CalendarClock size={24} className="opacity-70" />
+          </div>
+          <div>
+            <p className="text-sm text-stone-500 font-bold">اشتراكات متوقفة</p>
+            {isLoadingStats ? (
+              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
+            ) : (
+              <p className="text-2xl font-black text-red-600">{stats?.inactiveSubscriptions || 0}</p>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* Search & Filters */}

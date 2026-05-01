@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Cookie from "cookie-universal";
 import { jwtDecode } from "jwt-decode";
-import { useGetCustomers } from "@/api/customer";
+import { useGetCustomers, useGetCustomerStatistics } from "@/api/customer";
 import { useGetNetworks } from "@/api/network";
 import CreateCustomer from "./CreateCustomer";
 import EditCustomer from "./EditCustomer";
@@ -28,6 +28,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from "@/components/ui/pagination";
+import { ShieldCheck } from "lucide-react";
 
 function Customers() {
   const [page, setPage] = useState(1);
@@ -39,6 +40,9 @@ function Customers() {
   const [selectedCustomerName, setSelectedCustomerName] = useState("");
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // داخل مكون Customers
+  const { data: stats, isLoading: isLoadingStats } = useGetCustomerStatistics();
 
   const cookies = Cookie();
   const token = cookies.get("token");
@@ -85,25 +89,51 @@ function Customers() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        {/* إجمالي الزبائن */}
         <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
             <Users size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">إجمالي الزبائن في النظام</p>
-            <p className="text-2xl font-black text-stone-900">{meta.total}</p>
+            <p className="text-sm text-stone-500 font-bold tracking-wider">إجمالي الزبائن</p>
+            {isLoadingStats ? (
+              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
+            ) : (
+              <p className="text-2xl font-black text-stone-900">{stats?.totalCustomers || 0}</p>
+            )}
           </div>
         </div>
+
         <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
-            <UserIcon size={24} />
+            <ShieldCheck size={24} />
           </div>
           <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">النتائج المفلترة</p>
-            <p className="text-2xl font-black text-green-600">{filteredCustomers.length}</p>
+            <p className="text-sm text-stone-500 font-bold tracking-wider">الزبائن النشطين</p>
+            {isLoadingStats ? (
+              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
+            ) : (
+              <p className="text-2xl font-black text-green-600">{stats?.activeCustomers || 0}</p>
+            )}
           </div>
         </div>
+
+        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center">
+            <UserIcon size={24} className="opacity-60" />
+          </div>
+          <div>
+            <p className="text-sm text-stone-500 font-bold tracking-wider">الحسابات المتوقفة</p>
+            {isLoadingStats ? (
+              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
+            ) : (
+              <p className="text-2xl font-black text-red-600">{stats?.inactiveCustomers || 0}</p>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* Filters */}

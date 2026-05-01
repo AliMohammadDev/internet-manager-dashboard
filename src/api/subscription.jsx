@@ -39,6 +39,16 @@ export const useGetSubscription = (id) => {
   });
 };
 
+export const useGetSubscriptionStatistics = () => {
+  return useQuery({
+    queryKey: ["subscriptions-statistics"],
+    queryFn: async () => {
+      const res = await axios.get("/subscription/subscriptions-statistics");
+      return res.data;
+    },
+  });
+};
+
 export const useAddSubscription = (onSuccessCallback) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -48,6 +58,7 @@ export const useAddSubscription = (onSuccessCallback) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["subscriptions-statistics"] });
       toast.success("تم إضافة الاشتراك بنجاح");
       if (onSuccessCallback) onSuccessCallback();
     },
@@ -65,6 +76,8 @@ export const useEditSubscription = (onSuccessCallback) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["subscriptions-statistics"] });
+
       toast.success("تم تحديث الاشتراك");
       if (onSuccessCallback) onSuccessCallback();
     },
@@ -81,6 +94,8 @@ export const useDeleteSubscription = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
+      queryClient.invalidateQueries({ queryKey: ["subscriptions-statistics"] });
+
       toast.success("تم حذف الاشتراك بنجاح");
     },
     onError: () => toast.error("حدث خطأ أثناء الحذف")

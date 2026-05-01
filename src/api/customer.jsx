@@ -38,6 +38,16 @@ export const useGetCustomer = (id) => {
   });
 };
 
+export const useGetCustomerStatistics = () => {
+  return useQuery({
+    queryKey: ["customers-statistics"],
+    queryFn: async () => {
+      const res = await axios.get("/customer/customers-statistics");
+      return res.data;
+    },
+  });
+};
+
 export const useAddCustomer = (onSuccessCallback) => {
   const queryClient = useQueryClient();
 
@@ -53,6 +63,8 @@ export const useAddCustomer = (onSuccessCallback) => {
     },
     onSuccess: (newCustomer) => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
+      queryClient.invalidateQueries({ queryKey: ["customers-statistics"] });
+
       toast.success("تمت إضافة العميل بنجاح!");
       if (onSuccessCallback) onSuccessCallback(newCustomer);
     },
@@ -79,6 +91,8 @@ export const useEditCustomer = (onSuccessCallback) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
+      queryClient.invalidateQueries({ queryKey: ["customers-statistics"] });
+
       toast.success("تم تعديل بيانات العميل بنجاح");
       if (onSuccessCallback) onSuccessCallback();
     },
@@ -99,6 +113,8 @@ export const useDeleteCustomer = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
+      queryClient.invalidateQueries({ queryKey: ["customers-statistics"] });
+
       toast.success("تم حذف العميل بنجاح");
     },
     onError: () => {
