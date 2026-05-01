@@ -54,7 +54,7 @@ function CreatePoint({ setOpen, open, userId, userRole }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-2xl hover:bg-stone-800 transition-all shadow-md active:scale-95 font-bold font-cairo">
+        <button className="flex items-center gap-2 cursor-pointer bg-stone-900 text-white px-6 py-3 rounded-2xl hover:bg-stone-800 transition-all shadow-md active:scale-95 font-bold font-cairo">
           <Plus size={20} />
           <span>إضافة نقطة جديدة</span>
         </button>

@@ -83,7 +83,7 @@ function Employees() {
         </div>
         <button
           onClick={() => setIsAddOpen(true)}
-          className="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-2xl hover:bg-stone-800 transition-all font-bold font-cairo shadow-lg shadow-stone-100"
+          className="flex items-center gap-2 bg-stone-900 cursor-pointer active:scale-95 text-white px-6 py-3 rounded-2xl hover:bg-stone-800 transition-all font-bold font-cairo shadow-lg shadow-stone-100"
         >
           <UserPlus size={20} />
           <span>إضافة موظف جديد</span>

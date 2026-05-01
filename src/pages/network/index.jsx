@@ -49,7 +49,7 @@ function Network() {
         <div className="flex items-center gap-2">
           <Button
             onClick={() => setIsAddOpen(true)}
-            className="w-full md:w-auto bg-stone-900 hover:bg-stone-800 text-white px-6 h-12 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-stone-200 transition-all active:scale-95"
+            className="w-full md:w-auto bg-stone-900 cursor-pointer  hover:bg-stone-800 text-white px-6 h-12 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-stone-200 transition-all active:scale-95"
           >
             <Plus size={20} />
             <span>إضافة شبكة جديدة</span>

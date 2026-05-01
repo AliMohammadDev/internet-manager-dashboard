@@ -3,8 +3,7 @@ import * as z from "zod";
 export const permissionSchema = z.object({
   name: z
     .string()
-    .min(3, "رمز الصلاحية يجب أن يكون 3 حروف على الأقل")
-    .regex(/^[A-Z_]+$/, "يجب أن يتكون الرمز من أحرف كبيرة وعلامة _ فقط (مثال: CREATE_USER)"),
+    .min(3, "رمز الصلاحية يجب أن يكون 3 حروف على الأقل"),
 
   description: z
     .string()

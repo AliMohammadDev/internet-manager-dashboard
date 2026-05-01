@@ -89,7 +89,7 @@ function Customers() {
 
         <button
           onClick={() => setIsAddOpen(true)}
-          className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl hover:bg-stone-800 transition-all font-bold shadow-sm cursor-pointer"
+          className="flex items-center gap-2 bg-black active:scale-95  text-white px-5 py-2.5 rounded-xl hover:bg-stone-800 transition-all font-bold shadow-sm cursor-pointer"
         >
           <Plus size={20} />
           <span>إنشاء زبون جديد</span>

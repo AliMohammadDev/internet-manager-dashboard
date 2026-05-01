@@ -16,11 +16,6 @@ export const useGetPermissions = (page = 1, limit = 10, userId, userRole) => {
           type: "DESC"
         }
       };
-      if (userRole !== "admin") {
-        payload.user_id = {
-          value: Number(userId)
-        };
-      }
       const res = await axios.post("/permission/get-all", payload);
       return res.data;
     },

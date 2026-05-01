@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   Search, Filter, MoreVerticalIcon, Edit, Trash2,
-  Loader2, ShieldCheck, Key, Lock, Unlock, ShieldAlert, Plus
+  Loader2, ShieldCheck, Key, Lock, ShieldAlert
 } from "lucide-react";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -17,13 +17,7 @@ import {
   Pagination, PaginationContent, PaginationItem, PaginationLink,
   PaginationNext, PaginationPrevious
 } from "@/components/ui/pagination";
-import CreatePermission from "./CreatePermission";
 import { useGetPermissions } from "@/api/permission";
-import EditPermission from "./EditPermission";
-import DeletePermission from "./DeletePermission";
-import Cookie from "cookie-universal";
-import { jwtDecode } from "jwt-decode";
-import { Users } from "lucide-react";
 
 function Permissions() {
   const [page, setPage] = useState(1);
@@ -31,27 +25,8 @@ function Permissions() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const [selectedPermissionId, setSelectedPermissionId] = useState(null);
-  const [selectedPermissionName, setSelectedPermissionName] = useState("");
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-
-  const cookies = Cookie();
-  const token = cookies.get("token");
-  let userId = null;
-  let userRole = null;
-
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      userId = decoded.userId;
-      userRole = decoded.role;
-    } catch (error) { console.error(error); }
-  }
-
-  // const { data: stats, isLoading: isLoadingStats } = useGetPermissionStatistics();
-  const { data: response, isLoading: isLoadingPermissions } = useGetPermissions(page, 10, userId, userRole);
+  const { data: response, isLoading: isLoadingPermissions } = useGetPermissions(page, 10);
 
   const permissions = response?.items || [];
   const meta = response?.meta || { total_pages: 0, current_page: 1, total: 0 };
@@ -60,7 +35,12 @@ function Permissions() {
     const name = String(perm.name || "").toLowerCase();
     const desc = String(perm.description || "").toLowerCase();
     const search = searchTerm.toLowerCase();
-    return name.includes(search) || desc.includes(search);
+
+    const matchesSearch = name.includes(search) || desc.includes(search);
+    const matchesStatus = statusFilter === "all" ? true :
+      statusFilter === "active" ? perm.active === true : perm.active === false;
+
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -69,61 +49,9 @@ function Permissions() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-stone-900">قائمة الصلاحيات</h1>
-          <p className="text-stone-500 mt-1">إدارة أذونات النظام والتحكم في وصول المستخدمين .</p>
+          <p className="text-stone-500 mt-1">إدارة أذونات النظام والتحكم في وصول المستخدمين.</p>
         </div>
-        <button
-          onClick={() => setIsAddOpen(true)}
-          className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl hover:bg-stone-800 transition-all font-bold shadow-sm cursor-pointer"
-        >
-          <Plus size={20} />
-          <span>إنشاء صلاحية نظام</span>
-        </button>
       </div>
-
-      {/* stats cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
-            <Lock size={24} />
-          </div>
-          <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">إجمالي الصلاحيات</p>
-            {isLoadingStats ? (
-              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
-            ) : (
-              <p className="text-2xl font-black text-stone-900">{stats?.totalPermissions || 0}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
-            <ShieldCheck size={24} />
-          </div>
-          <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">صلاحيات نشطة</p>
-            {isLoadingStats ? (
-              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
-            ) : (
-              <p className="text-2xl font-black text-green-600">{stats?.activePermissions || 0}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="p-5 bg-white border border-stone-200 rounded-[24px] shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center">
-            <ShieldAlert size={24} className="opacity-60" />
-          </div>
-          <div>
-            <p className="text-sm text-stone-500 font-bold tracking-wider">صلاحيات معطلة</p>
-            {isLoadingStats ? (
-              <Loader2 className="animate-spin text-stone-300 size-5 mt-1" />
-            ) : (
-              <p className="text-2xl font-black text-red-600">{stats?.inactivePermissions || 0}</p>
-            )}
-          </div>
-        </div>
-      </div> */}
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">
@@ -133,23 +61,11 @@ function Permissions() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="ابحث عن صلاحية (مثال: CREATE_USER)..."
+            placeholder="ابحث بالاسم أو الوصف..."
             className="w-full p-3 pr-10 border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-stone-400 bg-white"
           />
         </div>
-        <div className="flex items-center gap-2 bg-white border border-stone-200 rounded-2xl px-3 min-w-45 shadow-sm">
-          <Filter size={18} className="text-stone-400" />
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="border-0 focus:ring-0 shadow-none w-full">
-              <SelectValue placeholder="الحالة" />
-            </SelectTrigger>
-            <SelectContent dir="rtl" className="font-cairo">
-              <SelectItem value="all">جميع الحالات</SelectItem>
-              <SelectItem value="active">نشطة</SelectItem>
-              <SelectItem value="inactive">غير نشطة</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+
       </div>
 
       {/* Table Section */}
@@ -168,7 +84,6 @@ function Permissions() {
                     <TableHead className="text-center font-bold text-stone-800 p-4 w-12">#</TableHead>
                     <TableHead className="text-right font-bold p-5">اسم الصلاحية</TableHead>
                     <TableHead className="text-right font-bold p-5">الوصف</TableHead>
-                    <TableHead className="text-right font-bold p-5">الحالة</TableHead>
                     <TableHead className="text-left font-bold p-5">إجراءات</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -176,7 +91,9 @@ function Permissions() {
                 <TableBody>
                   {filteredPermissions.map((perm, index) => (
                     <TableRow key={perm.id} className="hover:bg-stone-50/40 border-b border-stone-100 transition-colors group">
-                      <TableCell className="p-4 text-center font-medium text-stone-900 w-10">{index + 1}</TableCell>
+                      <TableCell className="p-4 text-center font-medium text-stone-900 w-10">
+                        {(page - 1) * 10 + index + 1}
+                      </TableCell>
 
                       <TableCell className="p-5">
                         <div className="flex items-center gap-3">
@@ -188,7 +105,7 @@ function Permissions() {
                       </TableCell>
 
                       <TableCell className="p-5 text-right text-stone-600 font-medium">
-                        {perm.description}
+                        {perm.description || <span className="text-stone-900 ">لا يوجد وصف</span>}
                       </TableCell>
 
                       <TableCell className="p-5 text-right">
@@ -198,30 +115,8 @@ function Permissions() {
                         </span>
                       </TableCell>
 
-                      <TableCell className="p-5 text-left">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="p-2 hover:bg-stone-100 rounded-xl outline-none">
-                            <MoreVerticalIcon size={18} className="text-stone-400" />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="w-48 font-cairo text-right rounded-2xl p-2 shadow-xl border-stone-100">
-                            <DropdownMenuItem
-                              onClick={() => { setSelectedPermissionId(perm.id); setIsEditOpen(true); }}
-                              className="flex items-center justify-end gap-2 cursor-pointer"
-                            >
-                              <span>تعديل البيانات</span>
-                              <Edit size={16} className="text-blue-500" />
-                            </DropdownMenuItem>
-                            <div className="h-px bg-stone-100 my-1" />
-                            <DropdownMenuItem
-                              onClick={() => { setSelectedPermissionId(perm.id); setSelectedPermissionName(perm.name); setIsDeleteOpen(true); }}
-                              className="text-red-600 flex items-center justify-end gap-2 cursor-pointer"
-                            >
-                              <span>حذف الصلاحية</span>
-                              <Trash2 size={16} />
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+
+
                     </TableRow>
                   ))}
                 </TableBody>
@@ -239,9 +134,17 @@ function Permissions() {
                       className={page === 1 ? "opacity-50 pointer-events-none" : "cursor-pointer"}
                     />
                   </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" isActive className="rounded-lg">{page}</PaginationLink>
-                  </PaginationItem>
+                  {[...Array(meta.total_pages)].map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        href="#"
+                        isActive={page === i + 1}
+                        onClick={(e) => { e.preventDefault(); setPage(i + 1); }}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
                   <PaginationItem>
                     <PaginationNext
                       href="#"
@@ -252,38 +155,16 @@ function Permissions() {
                 </PaginationContent>
               </Pagination>
             </div>
-          </>
 
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center py-24 bg-stone-50 rounded-[40px] border-2 border-dashed border-stone-200 mx-4 my-4">
             <Key size={48} className="text-stone-200 mb-2" />
-            <p className="text-stone-500 font-bold">لا يوجد صلاحيات مطابقين للبحث</p>
+            <p className="text-stone-500 font-bold">لا يوجد صلاحيات مطابقة للبحث</p>
             <Button variant="link" onClick={() => setIsAddOpen(true)} className="text-stone-600 underline">أضف صلاحية جديدة</Button>
           </div>
         )}
       </div>
-
-      {/* Modals */}
-      <CreatePermission
-        open={isAddOpen}
-        setOpen={setIsAddOpen}
-        userId={userId}
-        userRole={userRole}
-      />
-      <EditPermission
-        customerId={selectedPermissionId}
-        open={isEditOpen}
-        setOpen={setIsEditOpen}
-        userId={userId}
-        userRole={userRole}
-      />
-      <DeletePermission
-        customerId={selectedPermissionId}
-        customerName={selectedPermissionName}
-        open={isDeleteOpen}
-        setOpen={setIsDeleteOpen}
-      />
-
     </div>
   );
 }
