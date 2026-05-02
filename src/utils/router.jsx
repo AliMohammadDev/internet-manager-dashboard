@@ -16,6 +16,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/pages/NotFound";
 import Network from "@/pages/network";
 import Permission from "@/pages/permission";
+import PermissionEmployee from "@/pages/permissionEmployee";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,8 @@ const router = createBrowserRouter([
           { path: 'users', element: <User /> },
           { path: 'customers', element: <Customer /> },
           { path: 'employees', element: <Employee /> },
-          { path: 'employees-permissions', element: <Permission /> },
+          { path: 'permissions', element: <Permission /> },
+          { path: 'employees-permissions', element: < PermissionEmployee /> },
           { path: 'networks', element: <Network /> },
           { path: 'plans', element: <Plan /> },
           { path: 'subscriptions', element: <Subscription /> },

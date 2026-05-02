@@ -1,0 +1,110 @@
+import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
+export const useGetPermissionEmployees = (page = 1, limit = 10, userId, userRole) => {
+  return useQuery({
+    queryKey: ["employee-permissions", page, limit, userId],
+    queryFn: async () => {
+      const payload = {
+        pagination: {
+          page: page,
+          limit: limit
+        },
+        sort: {
+          by: "id",
+          type: "DESC"
+        }
+      };
+
+
+
+      const res = await axios.post("/employee-permission/get-all", payload);
+      return res.data;
+    },
+  });
+};
+
+export const useGetPermissionEmployee = (id) => {
+  return useQuery({
+    queryKey: ["employee-permission", id],
+    queryFn: async () => {
+      const res = await axios.get(`/employee-permission/get-one/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+};
+
+
+export const useAddPermissionEmployee = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (permissionData) => {
+      try {
+        const res = await axios.post("/employee-permission/create", permissionData);
+        return res.data;
+      } catch (error) {
+        const message = error.response?.data?.message || "حدث خطأ أثناء إضافة الصلاحية";
+        throw new Error(message);
+      }
+    },
+    onSuccess: (newPermission) => {
+      queryClient.invalidateQueries({ queryKey: ["employee-permissions"] });
+
+      toast.success("تمت إضافة الصلاحية بنجاح!");
+      if (onSuccessCallback) onSuccessCallback(newPermission);
+    },
+    onError: (error) => {
+      const errorMessage = Array.isArray(error.message) ? error.message[0] : error.message;
+      toast.error(errorMessage);
+    }
+  });
+};
+
+export const useEditPermissionEmployee = (onSuccessCallback) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (permissionData) => {
+      const { id, ...data } = permissionData;
+      try {
+        const res = await axios.patch(`/employee-permission/update/${id}`, data);
+        return res.data;
+      } catch (error) {
+        const message = error.response?.data?.message || "فشل تحديث بيانات الصلاحية";
+        throw new Error(message);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employee-permissions"] });
+
+      toast.success("تم تعديل بيانات الصلاحية بنجاح");
+      if (onSuccessCallback) onSuccessCallback();
+    },
+    onError: (error) => {
+      const errorMessage = Array.isArray(error.message) ? error.message[0] : error.message;
+      toast.error(errorMessage);
+    }
+  });
+};
+
+export const useDeletePermissionEmployee = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (permissionId) => {
+      await axios.delete(`/employee-permission/remove/${permissionId}`);
+      return permissionId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employee-permissions"] });
+
+      toast.success("تم حذف الصلاحية بنجاح");
+    },
+    onError: () => {
+      toast.error("حدث خطأ أثناء حذف الصلاحية");
+    }
+  });
+};

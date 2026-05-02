@@ -93,6 +93,7 @@ function App() {
     {
       title: "إدارة الموظفين", icon: <Briefcase />, items: [
         { title: "قائمة الموظفين", path: "/employees", icon: <Users size={20} /> },
+        { title: "قائمة الصلاحيات", path: "/permissions", icon: <ShieldCheck size={20} /> },
         { title: "صلاحيات الموظفين", path: "/employees-permissions", icon: <ShieldCheck size={20} /> },
       ]
     },

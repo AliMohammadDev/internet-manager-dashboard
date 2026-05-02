@@ -79,7 +79,6 @@ function CreatePlan({ setOpen, open, userId, userRole }) {
           </DialogHeader>
 
           <div className="space-y-5 py-2">
-            {/* اسم الباقة والشبكة */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700 mr-1 flex items-center gap-2">
@@ -116,7 +115,6 @@ function CreatePlan({ setOpen, open, userId, userRole }) {
               </div>
             </div>
 
-            {/* السرعة والسعر */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="grid gap-2 text-right">
                 <Label className="font-bold text-stone-700 mr-1 flex items-center gap-2">
@@ -145,7 +143,6 @@ function CreatePlan({ setOpen, open, userId, userRole }) {
               </div>
             </div>
 
-            {/* حالة الباقة */}
             <div className="flex items-center justify-between border border-stone-100 rounded-2xl h-14 px-5 bg-stone-50/50 mt-2 transition-all hover:bg-stone-50">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activeValue ? 'bg-green-100 text-green-600' : 'bg-stone-200 text-stone-500'}`}>
