@@ -17,6 +17,7 @@ import NotFound from "@/pages/NotFound";
 import Network from "@/pages/network";
 import Permission from "@/pages/permission";
 import PermissionEmployee from "@/pages/permissionEmployee";
+import ExpenseType from "@/pages/expenseType";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
           { path: 'access-points', element: <Point /> },
           { path: 'payments', element: <Payment /> },
           { path: 'expenses', element: <Expense /> },
+          { path: 'expenses-types', element: <ExpenseType /> },
           { path: 'settings', element: <Setting /> },
         ],
       },

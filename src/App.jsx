@@ -101,6 +101,7 @@ function App() {
       title: "المالية", icon: <CreditCardIcon />, items: [
         { title: "المدفوعات", path: "/payments", icon: <CreditCard size={20} /> },
         { title: "المصروفات", path: "/expenses", icon: <ArrowUpRight size={20} className="text-red-500" /> },
+        { title: "أنواع المصروفات", path: "/expenses-types", icon: <ArrowUpRight size={20} className="text-red-500" /> },
       ]
     },
   ].filter(group => {
